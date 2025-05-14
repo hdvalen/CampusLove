@@ -1,56 +1,32 @@
+using System;
 using MySql.Data.MySqlClient;
-using campusLove.Application.Config;
 
-namespace campusLove.Data
+namespace MiAppHexagonal.Infrastructure.Mysql;
+
+public class ConexionSingleton
 {
-    public class Database : IDisposable
+    private static ConexionSingleton? _instancia;
+    private readonly string _connectionString;
+    private MySqlConnection? _conexion;
+
+    private ConexionSingleton(string connectionString)
     {
-        private MySqlConnection _connection;
-        private bool _disposed = false;
+        _connectionString = connectionString;
+    }
 
-        public Database()
-        {
-            _connection = new MySqlConnection(AppSettings.ConnectionString);
-        }
+    public static ConexionSingleton Instancia(string connectionString)
+    {
+        _instancia ??= new ConexionSingleton(connectionString);
+        return _instancia;
+    }
 
-        public MySqlConnection Connection
-        {
-            get
-            {
-                if (_connection.State != System.Data.ConnectionState.Open)
-                {
-                    _connection.Open();
-                }
-                return _connection;
-            }
-        }
+    public MySqlConnection ObtenerConexion()
+    {
+        _conexion ??= new MySqlConnection(_connectionString);
 
-        public void Dispose()
-        {
-            Dispose(true);
-            GC.SuppressFinalize(this);
-        }
+        if (_conexion.State != System.Data.ConnectionState.Open)
+            _conexion.Open();
 
-        protected virtual void Dispose(bool disposing)
-        {
-            if (!_disposed)
-            {
-                if (disposing)
-                {
-                    if (_connection != null && _connection.State == System.Data.ConnectionState.Open)
-                    {
-                        _connection.Close();
-                        _connection.Dispose();
-                        _connection = null!;
-                    }
-                }
-                _disposed = true;
-            }
-        }
-
-        ~Database()
-        {
-            Dispose(false);
-        }
+        return _conexion;
     }
 }

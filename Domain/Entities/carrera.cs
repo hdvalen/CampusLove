@@ -2,10 +2,10 @@
 
 namespace campusLove.Domain.Entities;
 
-public class Carrera
+public class carreras
 {
-    public int IdCarrera { get; set; }
-    public string Nombre { get; set; }
+    public int id{ get; set; }
+    public string? nombre { get; set; }
 
-    public ICollection<Usuario> Usuarios { get; set; }
+    //public ICollection<usuarios> Usuario { get; set; }
 }

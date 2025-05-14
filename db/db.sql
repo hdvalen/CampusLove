@@ -33,7 +33,7 @@ CREATE TABLE   IF NOT EXISTS usuarioIntereses (
     id_interes INT,
     PRIMARY KEY (id_usuario, id_interes),
     CONSTRAINT id_usuario_fk FOREIGN KEY (id_usuario) REFERENCES usuarios(id),
-    CONSTRAINT id_interes_fk FOREIGN KEY (id_interes) REFERENCES Intereses(id)
+    CONSTRAINT id_interes_fk FOREIGN KEY (id_interes) REFERENCES intereses(id)
 );
 
 CREATE TABLE  IF NOT EXISTS interacciones (
@@ -42,8 +42,8 @@ CREATE TABLE  IF NOT EXISTS interacciones (
     id_paraUsuario INT NOT NULL,
     Tipo CHAR(1) CHECK (Tipo IN ('L', 'D')),
     Fecha DATETIME DEFAULT CURRENT_TIMESTAMP,
-    CONSTRAINT id_deUsuario_fk FOREIGN KEY (id_deUsuario) REFERENCES Usuarios(id),
-    CONSTRAINT id_paraUsuario_fk FOREIGN KEY (id_paraUsuario) REFERENCES Usuarios(id)
+    CONSTRAINT id_deUsuario_fk FOREIGN KEY (id_deUsuario) REFERENCES usuarios(id),
+    CONSTRAINT id_paraUsuario_fk FOREIGN KEY (id_paraUsuario) REFERENCES usuarios(id)
 );
 
 CREATE TABLE  IF NOT EXISTS coincidencias (
@@ -51,7 +51,7 @@ CREATE TABLE  IF NOT EXISTS coincidencias (
     id_usuario1 INT NOT NULL,
     id_usuario2 INT NOT NULL,
     FechaCoincidencia DATETIME DEFAULT CURRENT_TIMESTAMP,
-    CONSTRAINT id_usuario1_fk FOREIGN KEY (id_usuario1) REFERENCES Usuarios(id),
-    CONSTRAINT id_usuario2_fk FOREIGN KEY (id_usuario2) REFERENCES Usuarios(id)
+    CONSTRAINT id_usuario1_fk FOREIGN KEY (id_usuario1) REFERENCES usuarios(id),
+    CONSTRAINT id_usuario2_fk FOREIGN KEY (id_usuario2) REFERENCES usuarios(id)
 );
 

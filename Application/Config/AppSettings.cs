@@ -1,1 +1,0 @@
-namespace campusLove.Application.Config
