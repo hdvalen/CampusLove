@@ -1,0 +1,4 @@
+
+
+namespace campusLove.Domain.Entities;
+
