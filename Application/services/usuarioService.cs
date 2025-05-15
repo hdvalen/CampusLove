@@ -9,7 +9,6 @@ namespace campusLove.Application.Services
     public class UsuarioService
     {
         private readonly IUsuarioRepository _repo;
-
         public UsuarioService(IUsuarioRepository repo)
         {
             _repo = repo;

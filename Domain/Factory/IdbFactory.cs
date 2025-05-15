@@ -5,6 +5,6 @@ namespace campusLove.Domain.Factory;
 
 public interface IDbFactory
 {
-    IUsuarioRepository CrearClienteRepository();
+    IUsuarioRepository CrearUsuarioepository();
 }
     
