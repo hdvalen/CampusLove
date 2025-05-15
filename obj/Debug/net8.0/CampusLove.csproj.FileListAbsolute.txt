@@ -1,0 +1,6 @@
+C:\Users\USUARIO\Music\CampusLove-1\obj\Debug\net8.0\CampusLove.csproj.AssemblyReference.cache
+C:\Users\USUARIO\Music\CampusLove-1\obj\Debug\net8.0\CampusLove.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\USUARIO\Music\CampusLove-1\obj\Debug\net8.0\CampusLove.AssemblyInfoInputs.cache
+C:\Users\USUARIO\Music\CampusLove-1\obj\Debug\net8.0\CampusLove.AssemblyInfo.cs
+C:\Users\USUARIO\Music\CampusLove-1\obj\Debug\net8.0\CampusLove.csproj.CoreCompileInputs.cache
+C:\Users\USUARIO\Music\CampusLove-1\obj\Debug\net8.0\CampusLove.sourcelink.json
