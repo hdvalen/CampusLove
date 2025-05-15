@@ -18,13 +18,13 @@ CREATE TABLE   IF NOT EXISTS intereses (
 
 CREATE TABLE  IF NOT EXISTS usuarios (
     id INT PRIMARY KEY AUTO_INCREMENT,
-    nombre VARCHAR(100) NOT NULL,
+    nombre VARCHAR(45) NOT NULL,
     Edad INT NOT NULL,
     id_genero INT NOT NULL,
     id_carrera INT NOT NULL,
     FrasePerfil TEXT,
     Login VARCHAR(50) UNIQUE NOT NULL,
-    Password VARCHAR(255) NOT NULL,
+    Password VARCHAR(70) NOT NULL,
     CreditosDisponibles INT DEFAULT 10,
     CONSTRAINT id_genero_fk FOREIGN KEY (id_genero) REFERENCES generos(id),
     CONSTRAINT id_carrera_fk FOREIGN KEY (id_carrera) REFERENCES carreras(id)
