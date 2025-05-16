@@ -1,8 +1,9 @@
 
 namespace campusLove.Domain.Entities;
 
-public class usuarios
+public class Usuarios
 {
+    public static string Carrera { get; internal set; }
     public int id {get; set;}
     public string? nombre {get; set;}
     public int edad {get; set;}

@@ -1,7 +1,7 @@
 
 namespace campusLove.Domain.Entities;
 
-public class generos
+public class Generos
 {
     public int id {get; set;}
     public string? nombre {get; set;}
