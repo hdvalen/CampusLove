@@ -1,4 +1,4 @@
-namespace campusLove.Repositories
+namespace CampusLove.Repositories
 {
     public interface IRepository<T> where T : class
     {

@@ -1,107 +1,292 @@
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Text.Json;
 
-
-namespace campusLove.Application.UI
+namespace SistemaPerfiles
 {
-    public class MenuUsuario
+    public class Program
     {
+        private readonly MostrarMenuPrincipal() _menuPrincipal;
+        public MenuUsurio()
+        {
+            _menuPrincipal = new MostrarMenuPrincipal();
+        }
 
-        public void MostrarMenu()
+        public void  MostrarMenu()
         {
             bool salir = false;
+            
             while (!salir)
             {
                 Console.Clear();
-                Console.WriteLine("Usuario");
-                Console.WriteLine("1. Nombre");
-                Console.WriteLine("2. Dislike");
-                Console.WriteLine("0. Salir");
-                Console.Write("Seleccione una opción: ");
+                Console.ForegroundColor = ConsoleColor.Cyan;
+                Console.WriteLine("╔══════════════════════════════════════╗");
+                Console.WriteLine("║       SISTEMA DE PERFILES            ║");
+                Console.WriteLine("╚══════════════════════════════════════╝");
+                Console.ResetColor();
+                Console.WriteLine("\nSeleccione una opción:");
+                Console.WriteLine("1. Crear nuevo perfil");
+                Console.WriteLine("2. Ver detalle de perfil");
+                Console.WriteLine("3. Editar perfil");
+                Console.WriteLine("4. Guardar y salir");
+                Console.Write("\nOpción: ");
+                
                 string opcion = Console.ReadLine();
-
+                
                 switch (opcion)
                 {
                     case "1":
-                        // Lógica para iniciar sesión
+                        CrearPerfil().wait();
                         break;
                     case "2":
-                        // Lógica para registrarse
+                        VerDetallePerfil().wait();
                         break;
-                    case "0":
+                    case "3":
+                        EditarPerfil().wait();
+                        break;
+                    case "4":
+                        GuardarUsuarios().wait();
                         salir = true;
                         break;
                     default:
-                        Console.WriteLine("Opción no válida. Intente de nuevo.", ConsoleColor.DarkGreen);
+                        MenuPrincipal.MostrarMensaje("Opción no válida. Intente de nuevo.", ConsoleColor.DarkMagenta);
+                        Console.ReadKey();
                         break;
                 }
             }
-            MostrarMensaje("Gracias por usar Campus Love. ¡Hasta luego!", ConsoleColor.DarkGreen);
         }
-        public static void MostrarEncabezado(string titulo)
+
+
+        static void CrearPerfil()
         {
-            Console.ForegroundColor = ConsoleColor.DarkGreen;
-            
-            string borde = new string('=', titulo.Length + 4);
-            Console.WriteLine(borde);
-            Console.WriteLine($"| {titulo} |");
-            Console.WriteLine(borde);
-            
+            Console.Clear();
+            Console.ForegroundColor = ConsoleColor.Green;
+            Console.WriteLine("╔══════════════════════════════════════╗");
+            Console.WriteLine("║          CREAR NUEVO PERFIL          ║");
+            Console.WriteLine("╚══════════════════════════════════════╝");
             Console.ResetColor();
-        }
-        
-        public static void MostrarMensaje(string mensaje, ConsoleColor color)
-        {
-            Console.ForegroundColor = color;
-            Console.WriteLine(mensaje);
+            
+            Usuario nuevoUsuario = new Usuario();
+            
+            Console.Write("\nNombre: ");
+            nuevoUsuario.Nombre = Console.ReadLine();
+            
+            bool edadValida = false;
+            while (!edadValida)
+            {
+                Console.Write("Edad: ");
+                if (int.TryParse(Console.ReadLine(), out int edad))
+                {
+                    nuevoUsuario.Edad = edad;
+                    edadValida = true;
+                }
+                else
+                {
+                    Console.WriteLine("Por favor, ingrese un número válido para la edad.");
+                }
+            }
+            
+            Console.Write("Género (M/F/Otro): ");
+            nuevoUsuario.Genero = Console.ReadLine();
+            
+            Console.Write("Interés: ");
+            nuevoUsuario.Interes = Console.ReadLine();
+            
+            Console.Write("Carrera: ");
+            nuevoUsuario.Carrera = Console.ReadLine();
+            
+            Console.Write("Frase de perfil: ");
+            nuevoUsuario.FrasePerfil = Console.ReadLine();
+            
+            usuarios.Add(nuevoUsuario);
+            
+            Console.ForegroundColor = ConsoleColor.Green;
+            Console.WriteLine("\n¡Perfil creado exitosamente!");
             Console.ResetColor();
+            Console.WriteLine("\nPresione cualquier tecla para volver al menú principal...");
+            Console.ReadKey();
         }
-        
-        public static string LeerEntrada(string prompt)
+
+        static void VerDetallePerfil()
         {
-            Console.Write(prompt);
-            return Console.ReadLine() ?? "";
-        }
-        
-        public static int LeerEnteroPositivo(string prompt)
-        {
-            while (true)
+            if (usuarios.Count == 0)
             {
-                Console.Write(prompt);
-                if (int.TryParse(Console.ReadLine(), out int valor) && valor >= 0)
-                {
-                    return valor;
-                }
-                
-                MostrarMensaje("⚠ Error: Debe ingresar un número entero positivo.", ConsoleColor.Red);
+                Console.Clear();
+                Console.WriteLine("No hay perfiles registrados.");
+                Console.WriteLine("\nPresione cualquier tecla para volver al menú principal...");
+                Console.ReadKey();
+                return;
             }
-        }
-        
-        public static decimal LeerDecimalPositivo(string prompt)
-        {
-            while (true)
+            
+            Console.Clear();
+            Console.ForegroundColor = ConsoleColor.Magenta;
+            Console.WriteLine("╔══════════════════════════════════════╗");
+            Console.WriteLine("║          DETALLE DE PERFIL           ║");
+            Console.WriteLine("╚══════════════════════════════════════╝");
+            Console.ResetColor();
+            
+            Console.WriteLine("\nSeleccione un perfil:");
+            
+            for (int i = 0; i < usuarios.Count; i++)
             {
-                Console.Write(prompt);
-                if (decimal.TryParse(Console.ReadLine(), out decimal valor) && valor >= 0)
-                {
-                    return valor;
-                }
-                
-                MostrarMensaje("⚠ Error: Debe ingresar un número decimal positivo.", ConsoleColor.Red);
+                Console.WriteLine($"{i + 1}. {usuarios[i].Nombre}");
             }
-        }
-        
-        public static DateTime LeerFecha(string prompt)
-        {
-            while (true)
+            
+            Console.Write("\nNúmero de perfil: ");
+            if (int.TryParse(Console.ReadLine(), out int indice) && indice >= 1 && indice <= usuarios.Count)
             {
-                Console.Write(prompt);
-                if (DateTime.TryParse(Console.ReadLine(), out DateTime fecha))
+                Usuario usuario = usuarios[indice - 1];
+                
+                Console.Clear();
+                Console.ForegroundColor = ConsoleColor.Magenta;
+                Console.WriteLine("╔══════════════════════════════════════╗");
+                Console.WriteLine("║          DETALLE DE PERFIL           ║");
+                Console.WriteLine("╚══════════════════════════════════════╝");
+                Console.ResetColor();
+                
+                Console.WriteLine($"\nNombre: {usuario.Nombre}");
+                Console.WriteLine($"Edad: {usuario.Edad} años");
+                Console.WriteLine($"Género: {usuario.Genero}");
+                Console.WriteLine($"Interés: {usuario.Interes}");
+                Console.WriteLine($"Carrera: {usuario.Carrera}");
+                Console.WriteLine($"Frase de perfil: \"{usuario.FrasePerfil}\"");
+            }
+            else
+            {
+                Console.WriteLine("\nSelección no válida.");
+            }
+            
+            Console.WriteLine("\nPresione cualquier tecla para volver al menú principal...");
+            Console.ReadKey();
+        }
+
+        static void EditarPerfil()
+        {
+            if (usuarios.Count == 0)
+            {
+                Console.Clear();
+                Console.WriteLine("No hay perfiles registrados.");
+                Console.WriteLine("\nPresione cualquier tecla para volver al menú principal...");
+                Console.ReadKey();
+                return;
+            }
+            
+            Console.Clear();
+            Console.ForegroundColor = ConsoleColor.Blue;
+            Console.WriteLine("╔══════════════════════════════════════╗");
+            Console.WriteLine("║            EDITAR PERFIL             ║");
+            Console.WriteLine("╚══════════════════════════════════════╝");
+            Console.ResetColor();
+            
+            Console.WriteLine("\nSeleccione un perfil para editar:");
+            
+            for (int i = 0; i < usuarios.Count; i++)
+            {
+                Console.WriteLine($"{i + 1}. {usuarios[i].Nombre}");
+            }
+            
+            Console.Write("\nNúmero de perfil: ");
+            if (int.TryParse(Console.ReadLine(), out int indice) && indice >= 1 && indice <= usuarios.Count)
+            {
+                Usuario usuario = usuarios[indice - 1];
+                
+                Console.Clear();
+                Console.ForegroundColor = ConsoleColor.Blue;
+                Console.WriteLine("╔══════════════════════════════════════╗");
+                Console.WriteLine("║            EDITAR PERFIL             ║");
+                Console.WriteLine("╚══════════════════════════════════════╝");
+                Console.ResetColor();
+                
+                Console.WriteLine("\nDeje en blanco para mantener el valor actual.");
+                
+                Console.Write($"Nombre [{usuario.Nombre}]: ");
+                string nombre = Console.ReadLine();
+                if (!string.IsNullOrWhiteSpace(nombre))
                 {
-                    return fecha;
+                    usuario.Nombre = nombre;
                 }
                 
-                MostrarMensaje("⚠ Error: Formato de fecha incorrecto. Use DD/MM/AAAA.", ConsoleColor.Red);
+                Console.Write($"Edad [{usuario.Edad}]: ");
+                string edadStr = Console.ReadLine();
+                if (!string.IsNullOrWhiteSpace(edadStr) && int.TryParse(edadStr, out int edad))
+                {
+                    usuario.Edad = edad;
+                }
+                
+                Console.Write($"Género [{usuario.Genero}]: ");
+                string genero = Console.ReadLine();
+                if (!string.IsNullOrWhiteSpace(genero))
+                {
+                    usuario.Genero = genero;
+                }
+                
+                Console.Write($"Interés [{usuario.Interes}]: ");
+                string interes = Console.ReadLine();
+                if (!string.IsNullOrWhiteSpace(interes))
+                {
+                    usuario.Interes = interes;
+                }
+                
+                Console.Write($"Carrera [{usuario.Carrera}]: ");
+                string carrera = Console.ReadLine();
+                if (!string.IsNullOrWhiteSpace(carrera))
+                {
+                    usuario.Carrera = carrera;
+                }
+                
+                Console.Write($"Frase de perfil [{usuario.FrasePerfil}]: ");
+                string frase = Console.ReadLine();
+                if (!string.IsNullOrWhiteSpace(frase))
+                {
+                    usuario.FrasePerfil = frase;
+                }
+                
+                Console.ForegroundColor = ConsoleColor.Green;
+                Console.WriteLine("\n¡Perfil actualizado exitosamente!");
+                Console.ResetColor();
+            }
+            else
+            {
+                Console.WriteLine("\nSelección no válida.");
+            }
+            
+            Console.WriteLine("\nPresione cualquier tecla para volver al menú principal...");
+            Console.ReadKey();
+        }
+
+        static void CargarUsuarios()
+        {
+            try
+            {
+                if (File.Exists(archivoUsuarios))
+                {
+                    string json = File.ReadAllText(archivoUsuarios);
+                    usuarios = JsonSerializer.Deserialize<List<Usuario>>(json);
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error al cargar usuarios: {ex.Message}");
+                usuarios = new List<Usuario>();
             }
         }
 
+        static void GuardarUsuarios()
+        {
+            try
+            {
+                string json = JsonSerializer.Serialize(usuarios, new JsonSerializerOptions { WriteIndented = true });
+                File.WriteAllText(archivoUsuarios, json);
+                Console.WriteLine("\nDatos guardados exitosamente.");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"\nError al guardar usuarios: {ex.Message}");
+            }
+            
+            Console.WriteLine("\nPresione cualquier tecla para salir...");
+            Console.ReadKey();
+        }
     }
 }
