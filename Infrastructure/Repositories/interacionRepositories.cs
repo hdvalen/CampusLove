@@ -1,4 +1,4 @@
-using MySql.Data.MySqlClient;
+/* using MySql.Data.MySqlClient;
 using InteracionInventario.Data;
 using InteracionInventario.Domain.Entities;
 
@@ -216,4 +216,4 @@ namespace InteracionInventario.Repositories
             return movimientos;
         }
     }
-}
+} */

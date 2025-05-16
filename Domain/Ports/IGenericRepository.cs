@@ -1,12 +1,13 @@
-namespace CampusLove.Repositories
+
+
+namespace CampusLove.Domain.Ports
 {
-    public interface IRepository<T> where T : class
+    public interface IGenericRepository<T>
     {
-        // Operaciones básicas CRUD
-        Task<IEnumerable<T>> GetAllAsync();
-        Task<T?> GetByIdAsync(object id);
-        Task<bool> InsertAsync(T entity);
-        Task<bool> UpdateAsync(T entity);
-        Task<bool> DeleteAsync(object id);
+        
+        List<T> ObtenerTodos();
+        void Crear(T entity);
+        void Actualizar(T entity);
+        void Eliminar(int id);
     }
 }
