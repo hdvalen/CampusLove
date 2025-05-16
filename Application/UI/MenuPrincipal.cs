@@ -1,9 +1,14 @@
-using System;
 
 namespace campusLove.Application.UI
 {
     public class MenuPrincipal
     {
+        private readonly MenuRegistro _menuRegistro;
+
+        public MenuPrincipal()
+        {
+            _menuRegistro = new MenuRegistro();
+        }
         public void MostrarMenu()
         {
             bool salir = false;
@@ -12,15 +17,15 @@ namespace campusLove.Application.UI
                 Console.Clear();
                 Console.ForegroundColor = ConsoleColor.Cyan;
                 Console.WriteLine("╔════════════════════════════════════════════════════════╗");
-                Console.WriteLine("║                  ❤️ CAMPUS LOVE ❤️                    ║");                          
+                Console.WriteLine("║                  ❤️ CAMPUS LOVE ❤️                    ║");
                 Console.WriteLine("╠════════════════════════════════════════════════════════╣");
-                
+
                 Console.ForegroundColor = ConsoleColor.Yellow;
                 Console.WriteLine("╠════════════════════════════════════════════════════════╣");
                 Console.WriteLine("║ 🔑 ACCESO AL SISTEMA                                  ║");
                 Console.WriteLine("║   1. 🔐 Iniciar sesión                                ║");
                 Console.WriteLine("║   2. 📝 Registrarse                                   ║");
-                Console.WriteLine("║   0. 🚪 Salir                                         ║");
+                Console.WriteLine("║   0. 🚪 Salir                                          ║");
                 Console.WriteLine("╚════════════════════════════════════════════════════════╝");
 
                 Console.ForegroundColor = ConsoleColor.White;
@@ -32,9 +37,12 @@ namespace campusLove.Application.UI
                 {
                     case "1":
                         MostrarMensaje("Iniciando sesión...", ConsoleColor.Green);
+                        Console.Clear();
                         break;
                     case "2":
                         MostrarMensaje("Abriendo formulario de registro...", ConsoleColor.Green);
+                        Console.Clear();
+                        _menuRegistro.MostrarMenu();
                         break;
                     case "0":
                         salir = true;
@@ -44,7 +52,7 @@ namespace campusLove.Application.UI
                         break;
                 }
             }
-            
+
             Console.Clear();
             Console.ForegroundColor = ConsoleColor.Cyan;
             Console.WriteLine("╔════════════════════════════════════════════════════════╗");
@@ -64,6 +72,6 @@ namespace campusLove.Application.UI
             Console.ReadKey();
         }
         
-
+      
     }
 }

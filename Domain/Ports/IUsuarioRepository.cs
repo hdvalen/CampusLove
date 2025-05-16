@@ -1,11 +1,9 @@
 
 using campusLove.Domain.Entities;
 
+namespace CampusLove.Domain.Ports;
 
-namespace campusLove.Domain.Ports
+public interface IUsuarioRepository : IGenericRepository<Usuarios> 
 {
-    public interface IUsuarioRepository : IGenericRepository<usuarios>
-    {
-        
-    }
+
 }

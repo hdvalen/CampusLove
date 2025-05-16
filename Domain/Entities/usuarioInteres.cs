@@ -4,7 +4,7 @@ namespace campusLove.Domain.Entities;
 
 public class UsuarioIntereses
 {
-    public int id_usuario {get; set;}
-    public int id_interes {get; set;}
+    public Usuarios? id_usuario {get; set;}
+    public Intereses? id_interes {get; set;}
 
 }

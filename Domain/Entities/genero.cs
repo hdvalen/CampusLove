@@ -1,9 +1,8 @@
-
-namespace campusLove.Domain.Entities;
-
-public class Generos
+namespace campusLove.Domain.Entities
 {
-    public int id {get; set;}
-    public string? nombre {get; set;}
+    public class Genero
+    {
+        public int Id { get; set; }
+        public string Nombre { get; set; } = string.Empty;
+    }
 }
-
