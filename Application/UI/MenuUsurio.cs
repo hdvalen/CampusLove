@@ -1,107 +1,127 @@
+using System;
+using
+
+using campusLove.Domain.Entities;
 
 
-namespace campusLove.Application.UI
+namespace MenuPerfil
 {
-    public class MenuUsuario
+    public class MenuUsuarios
     {
-
-        public void MostrarMenu()
+        private readonly MenuUsuarios _menuUsuarios;
+        
+        public MenuUsuarios()
+        {
+            RepositoryUsuarios = new _repositoryUsuarios();
+        }
+        
+        public void MenuUsuarios()
         {
             bool salir = false;
+            
             while (!salir)
             {
                 Console.Clear();
-                Console.WriteLine("Usuario");
-                Console.WriteLine("1. Nombre");
-                Console.WriteLine("2. Dislike");
-                Console.WriteLine("0. Salir");
-                Console.Write("Seleccione una opción: ");
-                string opcion = Console.ReadLine();
-
+                MenuPrincipal.MostrarEncabezado("MENÚ DE USUARIOS");
+                Console.WriteLine("2. Ver detalle de usuario");
+                Console.WriteLine("3. Editar usuario");
+                Console.WriteLine("0. Regresar al menú principal");
+                
+                Console.Write("\nSeleccione una opción: ");
+                string opcion = Console.ReadLine() ?? "";
+                
                 switch (opcion)
                 {
-                    case "1":
-                        // Lógica para iniciar sesión
-                        break;
                     case "2":
-                        // Lógica para registrarse
+                        VerDetalleUsuario().Wait();
+                        break;
+                    case "3":
+                        EditarUsuario().Wait();
                         break;
                     case "0":
                         salir = true;
                         break;
                     default:
-                        Console.WriteLine("Opción no válida. Intente de nuevo.", ConsoleColor.DarkGreen);
+                        MenuPrincipal.MostrarMensaje("Opción no válida. Intente de nuevo.", ConsoleColor.DarkMagenta);
+                        Console.ReadKey();
                         break;
                 }
             }
-            MostrarMensaje("Gracias por usar Campus Love. ¡Hasta luego!", ConsoleColor.DarkGreen);
         }
-        public static void MostrarEncabezado(string titulo)
+        
+        private async Task ListarProductos()
         {
-            Console.ForegroundColor = ConsoleColor.DarkGreen;
+            Console.Clear();
+            MenuPrincipal.MostrarEncabezado("MENÚ USUARIOS");
             
-            string borde = new string('=', titulo.Length + 4);
-            Console.WriteLine(borde);
-            Console.WriteLine($"| {titulo} |");
-            Console.WriteLine(borde);
+            try
+            {
+                var productos = await _repositoryUsuarios.GetAllAsync();
+                
+                if (!productos.Any())
+                {
+                    MenuPrincipal.MostrarMensaje("\nNo hay productos registrados.", ConsoleColor.DarkMagenta);
+                }
+                else
+                {
+                    Console.WriteLine("\n{0,-10} {1,-30} {2,-8} {3,-15}", "ID", "Nombre", "Edad", "Genero", "Intereses", "Carrera", "FrasePerfil");
+                    Console.WriteLine(new string('-', 70));
+                    
+                    foreach (var producto in productos)
+                    {
+                        Console.WriteLine("{0,-10} {1,-30} {2,-8} {3,-15}", 
+                            usuario.Id, 
+                            usuario.Nombre.Length > 27 ? producto.Nombre.Substring(0, 27) + "..." : producto.Nombre, 
+                            usuario.Intereses.Length > 27 ? usuario.Intereses.Substring(0, 27) + "..." : usuario.Intereses,
+                            usuario.Carrera.Length > 27 ? usuario.Carrera.Substring(0, 27) + "..." : usuario.Carrera,
+                            usuario.FrasePerfil.Length > 27 ? usuario.FrasePerfil.Substring(0, 27) + "..." : usuario.FrasePerfil);
+                        Console.WriteLine(new string('-', 70));
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MenuPrincipal.MostrarMensaje($"\n ⚠ Error al listar productos: {ex.Message}", ConsoleColor.Red);
+            }
             
-            Console.ResetColor();
+            Console.Write("\nPresione cualquier tecla para continuar...");
+            Console.ReadKey();
         }
         
-        public static void MostrarMensaje(string mensaje, ConsoleColor color)
+        private async Task BuscarProducto()
         {
-            Console.ForegroundColor = color;
-            Console.WriteLine(mensaje);
-            Console.ResetColor();
-        }
-        
-        public static string LeerEntrada(string prompt)
-        {
-            Console.Write(prompt);
-            return Console.ReadLine() ?? "";
-        }
-        
-        public static int LeerEnteroPositivo(string prompt)
-        {
-            while (true)
+            Console.Clear();
+            MenuPrincipal.MostrarEncabezado("BUSCAR USUARIO");
+            
+            string id = MenuPrincipal.LeerEntrada("\nIngrese el ID usuario: ");
+            
+            try
             {
-                Console.Write(prompt);
-                if (int.TryParse(Console.ReadLine(), out int valor) && valor >= 0)
-                {
-                    return valor;
-                }
+                var producto = await _repositoryUsuario.GetByIdAsync(id);
                 
-                MostrarMensaje("⚠ Error: Debe ingresar un número entero positivo.", ConsoleColor.Red);
+                if (producto == null)
+                {
+                    MenuPrincipal.MostrarMensaje("\nEl producto no existe.", ConsoleColor.DarkMagenta);
+                }
+                else
+                {
+                    Console.WriteLine("\nINFORMACIÓN DEL USUARIO:");
+                    Console.WriteLine($"ID: {usuario.Id}");
+                    Console.WriteLine($"Nombre: {usuario.Nombre}");
+                    Console.WriteLine($"Stock: {usuario.Edad}");
+                    Console.WriteLine($"Stock Mínimo: {usuario.Genero}");
+                    Console.WriteLine($"Stock Actual: {usuario.Intereses}");    
+                    Console.WriteLine($"Stock Mínimo: {usuario.Carrera}");
+                    Console.WriteLine($"Stock Actual: {usuario.FrasePerfil}");
+                    
+                    
+            catch (Exception ex)
+            {
+                MenuPrincipal.MostrarMensaje($"\n ⚠ Error al buscar usuario: {ex.Message}", ConsoleColor.Red);
             }
+            
+            Console.Write("\nPresione cualquier tecla para continuar...");
+            Console.ReadKey();
         }
         
-        public static decimal LeerDecimalPositivo(string prompt)
-        {
-            while (true)
-            {
-                Console.Write(prompt);
-                if (decimal.TryParse(Console.ReadLine(), out decimal valor) && valor >= 0)
-                {
-                    return valor;
-                }
-                
-                MostrarMensaje("⚠ Error: Debe ingresar un número decimal positivo.", ConsoleColor.Red);
-            }
-        }
-        
-        public static DateTime LeerFecha(string prompt)
-        {
-            while (true)
-            {
-                Console.Write(prompt);
-                if (DateTime.TryParse(Console.ReadLine(), out DateTime fecha))
-                {
-                    return fecha;
-                }
-                
-                MostrarMensaje("⚠ Error: Formato de fecha incorrecto. Use DD/MM/AAAA.", ConsoleColor.Red);
-            }
-        }
-
-    }
-}
+ 
