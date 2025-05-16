@@ -1,15 +1,12 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-
-namespace campusLove.Domain.Ports
+namespace campusLove.Repositories
 {
-    public interface IGenericRepository<T>
+    public interface IRepository<T> where T : class
     {
-        List<T> ObtenerTodos();
-        void Crear(T entity);
-        void Actualizar(T entity);
-        void Eliminar(int id);
+        // Operaciones básicas CRUD
+        Task<IEnumerable<T>> GetAllAsync();
+        Task<T?> GetByIdAsync(object id);
+        Task<bool> InsertAsync(T entity);
+        Task<bool> UpdateAsync(T entity);
+        Task<bool> DeleteAsync(object id);
     }
 }

@@ -1,32 +1,56 @@
-using System;
 using MySql.Data.MySqlClient;
+using campusLove.Application.Config;
 
-namespace MiAppHexagonal.Infrastructure.Mysql;
-
-public class ConexionSingleton
+namespace campusLove.Data
 {
-    private static ConexionSingleton? _instancia;
-    private readonly string _connectionString;
-    private MySqlConnection? _conexion;
-
-    private ConexionSingleton(string connectionString)
+    public class DataBase : IDisposable
     {
-        _connectionString = connectionString;
-    }
+        private MySqlConnection _connection;
+        private bool _disposed = false;
 
-    public static ConexionSingleton Instancia(string connectionString)
-    {
-        _instancia ??= new ConexionSingleton(connectionString);
-        return _instancia;
-    }
+        public DataBase()
+        {
+            _connection = new MySqlConnection(Connection.ConnectionString);
+        }
 
-    public MySqlConnection ObtenerConexion()
-    {
-        _conexion ??= new MySqlConnection(_connectionString);
+        public MySqlConnection Connection
+        {
+            get
+            {
+                if (_connection.State != System.Data.ConnectionState.Open)
+                {
+                    _connection.Open();
+                }
+                return _connection;
+            }
+        }
 
-        if (_conexion.State != System.Data.ConnectionState.Open)
-            _conexion.Open();
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
 
-        return _conexion;
+        protected virtual void Dispose(bool disposing)
+        {
+            if (!_disposed)
+            {
+                if (disposing)
+                {
+                    if (_connection != null && _connection.State == System.Data.ConnectionState.Open)
+                    {
+                        _connection.Close();
+                        _connection.Dispose();
+                        _connection = null!;
+                    }
+                }
+                _disposed = true;
+            }
+        }
+
+        ~DataBase()
+        {
+            Dispose(false);
+        }
     }
 }

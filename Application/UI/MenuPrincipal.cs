@@ -1,9 +1,16 @@
 using System;
-
+using campusLove.Domain.Entities;
+using campusLove.Infrastructure.Repositories;
 namespace campusLove.Application.UI
 {
     public class MenuPrincipal
     {
+        private readonly MenuRegistro _menuRegistro;
+
+        public MenuPrincipal()
+        {
+            _menuRegistro = new MenuRegistro();
+        }
         public void MostrarMenu()
         {
             bool salir = false;
@@ -12,9 +19,9 @@ namespace campusLove.Application.UI
                 Console.Clear();
                 Console.ForegroundColor = ConsoleColor.Cyan;
                 Console.WriteLine("╔════════════════════════════════════════════════════════╗");
-                Console.WriteLine("║                  ❤️ CAMPUS LOVE ❤️                    ║");                          
+                Console.WriteLine("║                  ❤️ CAMPUS LOVE ❤️                    ║");
                 Console.WriteLine("╠════════════════════════════════════════════════════════╣");
-                
+
                 Console.ForegroundColor = ConsoleColor.Yellow;
                 Console.WriteLine("╠════════════════════════════════════════════════════════╣");
                 Console.WriteLine("║ 🔑 ACCESO AL SISTEMA                                  ║");
@@ -35,6 +42,7 @@ namespace campusLove.Application.UI
                         break;
                     case "2":
                         MostrarMensaje("Abriendo formulario de registro...", ConsoleColor.Green);
+                        _menuRegistro.MostrarMenu();
                         break;
                     case "0":
                         salir = true;
@@ -44,7 +52,7 @@ namespace campusLove.Application.UI
                         break;
                 }
             }
-            
+
             Console.Clear();
             Console.ForegroundColor = ConsoleColor.Cyan;
             Console.WriteLine("╔════════════════════════════════════════════════════════╗");
@@ -64,6 +72,6 @@ namespace campusLove.Application.UI
             Console.ReadKey();
         }
         
-
+      
     }
 }

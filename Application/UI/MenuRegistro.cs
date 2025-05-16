@@ -6,7 +6,7 @@ namespace campusLove.Application.UI
 {
     public class MenuRegistro
     {
-        private object RegistroUsiuario;
+        private Usuarios usuario = new Usuarios();
 
         public void MostrarMenu()
         {
@@ -53,35 +53,35 @@ namespace campusLove.Application.UI
                     case "1":
                         MostrarEncabezado("Cambiar Nombre");
                         string nuevoNombre = LeerEntrada("Ingrese el nombre: ");
-                        Usuario.Nombre = nuevoNombre;
+                        usuario.Nombre = nuevoNombre;
                         MostrarMensaje("✅ Nombre actualizado correctamente.", ConsoleColor.Green);
                         break;
 
                     case "2":
                         MostrarEncabezado("Cambiar Edad");
                         int nuevaEdad = LeerEnteroPositivo("Ingrese edad: ");
-                        usuario.Edad = nuevaEdad;
+                        usuario.edad = nuevaEdad;
                         MostrarMensaje("✅ Edad guardado correctamente.", ConsoleColor.Green);
                         break;
 
                     case "3":
                         MostrarEncabezado("Género");
                         string nuevoGenero = LeerEntrada("Ingrese su género: ");
-                        usuario.Genero = nuevoGenero;
+                        usuario.genero = nuevoGenero;
                         MostrarMensaje("✅ Género guardado correctamente.", ConsoleColor.Green);
                         break;
 
                     case "4":
                         MostrarEncabezado("Intereses");
                         string nuevosIntereses = LeerEntrada("Ingrese intereses separados por coma: ");
-                        usuario.Intereses = nuevosIntereses;
+                        usuario.intereses = nuevosIntereses;
                         MostrarMensaje("✅ Intereses guardados correctamente.", ConsoleColor.Green);
                         break;
 
                     case "5":
                         MostrarEncabezado("Carrera");
                         string nuevaCarrera = LeerEntrada("Ingrese carrera: ");
-                        Usuarios.Carrera = nuevaCarrera;
+                        usuario.Carrera = nuevaCarrera;
                         MostrarMensaje("✅ Carrera guardada correctamente.", ConsoleColor.Green);
                         break;
 
@@ -127,3 +127,4 @@ namespace campusLove.Application.UI
             throw new NotImplementedException();
         }
     }
+}
