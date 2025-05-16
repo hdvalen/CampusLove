@@ -1,7 +1,7 @@
 
 namespace campusLove.Domain.Entities;
 
-public class interacciones
+public class Interacciones
 {
     public int id {get; set;}
     public int id_deUsuario {get; set;}

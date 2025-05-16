@@ -2,7 +2,7 @@
 
 namespace campusLove.Domain.Entities;
 
-public class carreras
+public class Carreras
 {
     public int id{ get; set; }
     public string? nombre { get; set; }
