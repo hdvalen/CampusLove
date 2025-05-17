@@ -1,10 +1,10 @@
 using MySql.Data.MySqlClient;
 
-namespace CampusLove.Infrastructure.Configuration
+namespace CampusLove.Application.services
 {
-    public static class DatabaseConfig
+    public static class dbSettings
     {
-        private static string _connectionString = "Server=localhost;Database=campusLove;User=root;Password=Lau05032015;";
+        private static string _connectionString = "Server=localhost;Database=campusLove;User=root;Password=root;";
         private static MySqlConnection? _connection;
 
         public static MySqlConnection GetConnection()

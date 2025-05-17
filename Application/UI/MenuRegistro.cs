@@ -1,7 +1,7 @@
 
-using campusLove.Domain.Entities;
 using CampusLove.Domain.Ports;
-
+using CampusLove.Infrastructure.Repositories;
+using MySql.Data.MySqlClient;
 
 
 namespace CampusLove.Application.UI
@@ -9,53 +9,58 @@ namespace CampusLove.Application.UI
     public class MenuRegistro
     {
         public readonly IGeneroRepository _generoRepository;
+        public readonly ICarreraRepository _carreraRepository;
 
-        public MenuRegistro(IGeneroRepository generoRepository)
+        public MenuRegistro(MySqlConnection connection)
         {
-            _generoRepository = generoRepository;
-
+            _generoRepository = new GeneroRepository(connection);
+            _carreraRepository = new CarreraRepository(connection);
         }
-
-        public void MostrarMenu()
+  
+        public void RegistrarUsuario()
         {
+
             Console.Clear();
             Console.ForegroundColor = ConsoleColor.Magenta;
             Console.WriteLine("╔════════════════════════════════════════════════════════╗");
             Console.WriteLine("║                  📝 REGISTRO DE USUARIO                ║");
             Console.WriteLine("╚════════════════════════════════════════════════════════╝");
             Console.ResetColor();
-
-       
-        }
-        public void RegistrarUsuario()
-        {
-
             // Usa el repositorio inyectado en lugar de crear uno nuevo
             var generoRepository = _generoRepository;
+            var carreraRepository = _carreraRepository;
 
-            string nombre = MenuRegistro.ReadText("📛 Nombre: ");
-            int edad = MenuRegistro.ReadInt("🎂 Edad: ");
-            while (!int.TryParse(Console.ReadLine(), out edad))
-            {
-                Console.Write("⚠️ Edad no válida. Ingrese un número: ");
-            }
-            string frasePerfil = MenuRegistro.ReadText("📝 Frase Perfil: ");
+            string nombre = MenuPrincipal.ReadText("📛 Nombre "); 
+            int edad = MenuPrincipal.ReadInt("🎂 Edad ");
+            string frasePerfil = MenuPrincipal.ReadText("📝 Frase Perfil ");
+
             //Mostrar generos
-
-
             Console.WriteLine(" 👤 Seleccione un género:");
-            var generos = generoRepository.ObtenerTodos();
-            foreach (var genero in generos)
+            var generos = generoRepository.GetAllAsync().Result.ToList();
+            for (int i = 0; i < generos.Count; i++)
             {
-                Console.WriteLine($"  {genero.Id} - {genero.Nombre}");
+                Console.WriteLine($" {i + 1}. {generos[i].Nombre}");
             }
             Console.Write("Seleccione el número del género: ");
-            int idGenero;
-            while (!int.TryParse(Console.ReadLine(), out idGenero) || generos.All(g => (g as Genero)?.Id != idGenero))
+            int generoSeleccionado;
+            while (!int.TryParse(Console.ReadLine(), out generoSeleccionado) || generoSeleccionado < 1 || generoSeleccionado > generos.Count)
             {
-                Console.Write("⚠️ Género no válido. Ingrese un número: ");
+                Console.Write("⚠️ Selección no válida. Ingrese un número válido: ");
             }
-
+            Console.Write(" ");
+            //Mostrar carreras
+            Console.WriteLine(" 🎓 Seleccione una carrera:");
+            var carreras = carreraRepository.GetAllAsync().Result.ToList();
+            for (int i = 0; i < carreras.Count; i++)
+            {
+                Console.WriteLine($" {i + 1}. {carreras[i].Nombre}");
+            }
+            Console.Write("Seleccione el número de la carrera: ");
+            int carreraSeleccionada;
+            while (!int.TryParse(Console.ReadLine(), out carreraSeleccionada) || carreraSeleccionada < 1 || carreraSeleccionada > carreras.Count)
+            {
+                Console.Write("⚠️ Selección no válida. Ingrese un número válido: ");
+            }
 
             Console.Write(" ");
 
@@ -65,10 +70,7 @@ namespace CampusLove.Application.UI
             string? nombreUsuario = Console.ReadLine();
 
             Console.Write("🔐 Contraseña: ");
-            string? contrasena = Console.ReadLine();
-
-
-
+            string? contrasena = LeerContraseñaConAsteriscos();
             var usuario = new Usuarios
             {
                 nombre = nombre,
@@ -84,15 +86,32 @@ namespace CampusLove.Application.UI
             Console.WriteLine("\nPresione cualquier tecla para volver al menú principal...");
             Console.ReadKey();
         }
+        public static string LeerContraseñaConAsteriscos()
+{
+    string contraseña = string.Empty;
+    ConsoleKeyInfo tecla;
 
-        private static int ReadInt(string v)
+    do
+    {
+        tecla = Console.ReadKey(intercept: true); // No muestra la tecla en consola
+
+        if (tecla.Key == ConsoleKey.Backspace && contraseña.Length > 0)
         {
-            throw new NotImplementedException();
+            // Eliminar último carácter
+            contraseña = contraseña[..^1];
+            Console.Write("\b \b"); // Borra un asterisco de la consola
+        }
+        else if (!char.IsControl(tecla.KeyChar))
+        {
+            contraseña += tecla.KeyChar;
+            Console.Write("*"); // Muestra un asterisco
         }
 
-        private static string ReadText(string v)
-        {
-            throw new NotImplementedException();
-        }
+    } while (tecla.Key != ConsoleKey.Enter);
+
+    Console.WriteLine(); // Salto de línea al terminar
+    return contraseña;
+}
+
     }
 }

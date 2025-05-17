@@ -1,11 +1,23 @@
 
+using CampusLove.Application.services;
 using CampusLove.Application.UI;
+using CampusLove.Infrastructure.Repositories;
+using MySql.Data.MySqlClient;
 
 
 namespace CampusLove.Application.UI
 {
     public class MenuPrincipal
     {
+        private readonly MenuRegistro _menuRegistro;
+        private readonly MenuUsuario _menuUsuario;
+
+        public MenuPrincipal()
+        {
+            var connection = dbSettings.GetConnection();
+            _menuRegistro = new MenuRegistro(connection);
+            _menuUsuario = new MenuUsuario(connection);
+        }
         public void MostrarMenu()
         {
             bool salir = false;
@@ -24,22 +36,23 @@ namespace CampusLove.Application.UI
                 Console.WriteLine("║   2. 📝 Registrarse                                   ║");
                 Console.WriteLine("║   0. 🚪 Salir                                          ║");
                 Console.WriteLine("╚════════════════════════════════════════════════════════╝");
-
                 Console.ForegroundColor = ConsoleColor.White;
+                Console.ResetColor();
                 Console.Write("🡺 Seleccione una opción: ");
                 string? opcion = Console.ReadLine();
-                Console.ResetColor();
+                
 
                 switch (opcion)
                 {
                     case "1":
-                        MostrarMensaje("Iniciando sesión...", ConsoleColor.Green);
+                        MostrarMensaje("Iniciando sesión, presiona una tecla...", ConsoleColor.Green);
                         Console.Clear();
+                        _menuUsuario.IniciarSesion();
                         break;
                     case "2":
-                        MostrarMensaje("Abriendo formulario de registro...", ConsoleColor.Green);
+                        MostrarMensaje("Abriendo formulario de registro, presiona una tecla...", ConsoleColor.Green);
                         Console.Clear();
-
+                        _menuRegistro.RegistrarUsuario();
                         break;
                     case "0":
                         salir = true;
@@ -55,8 +68,7 @@ namespace CampusLove.Application.UI
             Console.WriteLine("╔════════════════════════════════════════════════════════╗");
             Console.WriteLine("║                  ❤️ CAMPUS LOVE ❤️                    ║");
             Console.WriteLine("╚════════════════════════════════════════════════════════╝");
-            MostrarMensaje("Gracias por usar Campus Love. ¡Hasta pronto! ❤️", ConsoleColor.Green);
-            Console.WriteLine("Presione cualquier tecla para salir...");
+            MostrarMensaje("Gracias por usar Campus Love. ¡Hasta pronto! ❤️\nPresione cualquier letra", ConsoleColor.Green);
             Console.ReadKey();
         }
 
@@ -65,10 +77,31 @@ namespace CampusLove.Application.UI
             Console.ForegroundColor = color;
             Console.WriteLine(mensaje);
             Console.ResetColor();
-            Console.WriteLine("Presione cualquier tecla para continuar...");
             Console.ReadKey();
         }
 
+        internal static string ReadText(string v)
+        {
+            Console.Write(v + ": ");
+            return Console.ReadLine() ?? string.Empty;
+        }
+
+        internal static int ReadInt(string v)
+        {
+            int resultado;
+            while (true)
+            {
+                Console.Write(v + ": ");
+                string? entrada = Console.ReadLine();
+
+                if (int.TryParse(entrada, out resultado))
+                {
+                    return resultado;
+                }
+
+                Console.WriteLine("❌ Entrada no válida. Por favor, ingresa un número entero.");
+            }
+        }
 
     }
 }

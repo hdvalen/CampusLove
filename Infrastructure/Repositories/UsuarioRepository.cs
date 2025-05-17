@@ -1,6 +1,7 @@
 
-using campusLove.Domain.Entities;
+using CampusLove.Domain.Entities;
 using CampusLove.Domain.Ports;
+using CampusLove.Repositories;
 using MySql.Data.MySqlClient;
 
 namespace CampusLove.Infrastructure.Repositories
@@ -83,30 +84,23 @@ namespace CampusLove.Infrastructure.Repositories
             return null;
         }
 
-        // Implementación de los métodos de IGenericRepository<Usuarios>
-        public IEnumerable<Usuarios> ObtenerTodos()
-        {
-            
-            return GetAllAsync().Result;
-        }
-
-        public void Crear(Usuarios usuario)
+        public async Task<bool> InsertAsync(Usuarios entity)
         {
             const string query = "INSERT INTO usuarios (nombre, edad, FrasePerfil, login, Password, idCarrera, nombreCarrera, idGenero, nombreGenero) VALUES (@nombre, @edad, @FrasePerfil, @login, @Password, @idCarrera, @nombreCarrera, @idGenero, @nombreGenero)";
             using var command = new MySqlCommand(query, _connection);
-            command.Parameters.AddWithValue("@nombre", usuario.nombre);
-            command.Parameters.AddWithValue("@edad", usuario.edad);
-            command.Parameters.AddWithValue("@FrasePerfil", usuario.FrasePerfil);
-            command.Parameters.AddWithValue("@login", usuario.login);
-            command.Parameters.AddWithValue("@Password", usuario.Password);
-            command.Parameters.AddWithValue("@idCarrera", usuario.idCarrera?.Id ?? 0);
-            command.Parameters.AddWithValue("@nombreCarrera", usuario.idCarrera?.Nombre ?? string.Empty);
-            command.Parameters.AddWithValue("@idGenero", usuario.idGenero?.Id ?? 0);
-            command.Parameters.AddWithValue("@nombreGenero", usuario.idGenero?.Nombre ?? string.Empty);
-            command.ExecuteNonQuery();
+            command.Parameters.AddWithValue("@nombre", entity.nombre);
+            command.Parameters.AddWithValue("@edad", entity.edad);
+            command.Parameters.AddWithValue("@FrasePerfil", entity.FrasePerfil);
+            command.Parameters.AddWithValue("@login", entity.login);
+            command.Parameters.AddWithValue("@Password", entity.Password);
+            command.Parameters.AddWithValue("@idCarrera", entity.idCarrera?.Id ?? 0);
+            command.Parameters.AddWithValue("@nombreCarrera", entity.idCarrera?.Nombre ?? string.Empty);
+            command.Parameters.AddWithValue("@idGenero", entity.idGenero?.Id ?? 0);
+            command.Parameters.AddWithValue("@nombreGenero", entity.idGenero?.Nombre ?? string.Empty);
+            return await command.ExecuteNonQueryAsync() > 0;
         }
 
-        public void Actualizar(Usuarios usuario)
+        public async Task<bool> UpdateAsync(Usuarios usuario)
         {
             const string query = "UPDATE usuarios SET nombre = @nombre, edad = @edad, FrasePerfil = @FrasePerfil, login = @login, Password = @Password, idCarrera = @idCarrera, nombreCarrera = @nombreCarrera, idGenero = @idGenero, nombreGenero = @nombreGenero WHERE id = @id";
             using var command = new MySqlCommand(query, _connection);
@@ -120,20 +114,15 @@ namespace CampusLove.Infrastructure.Repositories
             command.Parameters.AddWithValue("@nombreCarrera", usuario.idCarrera?.Nombre ?? string.Empty);
             command.Parameters.AddWithValue("@idGenero", usuario.idGenero?.Id ?? 0);
             command.Parameters.AddWithValue("@nombreGenero", usuario.idGenero?.Nombre ?? string.Empty);
-            command.ExecuteNonQuery();
+            return await command.ExecuteNonQueryAsync() > 0;
         }
 
-        public void Eliminar(int id)
+        public async Task<bool> DeleteAsync(object id)
         {
-            const string query = "DELETE FROM usuarios WHERE id = @id";
+             const string query = "DELETE FROM usuarios WHERE id = @id";
             using var command = new MySqlCommand(query, _connection);
             command.Parameters.AddWithValue("@id", id);
-            command.ExecuteNonQuery();
-        }
-
-        List<Usuarios> IGenericRepository<Usuarios>.ObtenerTodos()
-        {
-            throw new NotImplementedException();
+            return await command.ExecuteNonQueryAsync() > 0;
         }
     }
 }

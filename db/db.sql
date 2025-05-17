@@ -1,4 +1,4 @@
-CREATE DATABASE campusLove;
+CREATE DATABASE IF NOT EXISTS campusLove;
 USE campusLove;
 
 CREATE TABLE IF NOT EXISTS generos (
