@@ -1,6 +1,6 @@
-﻿using campusLove.Application.UI;
+﻿using CampusLove.Application.UI;
 
-namespace campusLove
+namespace CampusLove
 {
     class Program
     {
