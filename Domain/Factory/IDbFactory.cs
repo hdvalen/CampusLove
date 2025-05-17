@@ -6,5 +6,6 @@ public interface IDbFactory
 {
    IUsuarioRepository CrearUsuarioRepository();
    IGeneroRepository CrearGeneroRepository();
+   ICarreraRepository CrearCarreraRepository();
 }
 

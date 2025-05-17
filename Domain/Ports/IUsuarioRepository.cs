@@ -1,5 +1,6 @@
 
-using campusLove.Domain.Entities;
+using CampusLove.Domain.Entities;
+using CampusLove.Repositories;
 
 namespace CampusLove.Domain.Ports;
 

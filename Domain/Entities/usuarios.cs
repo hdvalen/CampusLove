@@ -1,5 +1,6 @@
 
-namespace campusLove.Domain.Entities;
+
+using CampusLove.Domain.Entities;
 
 public class Usuarios
 {

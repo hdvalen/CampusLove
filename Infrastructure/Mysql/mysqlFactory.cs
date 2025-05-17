@@ -24,5 +24,10 @@ public class MySqlDbFactory : IDbFactory
         var connection = ConexionSingleton.Instancia(_connectionString).ObtenerConexion();
         return new GeneroRepository(connection);
     }
+    public ICarreraRepository CrearCarreraRepository()
+    {
+        var connection = ConexionSingleton.Instancia(_connectionString).ObtenerConexion();
+        return new CarreraRepository(connection);
+    }
 }
 
