@@ -1,11 +1,13 @@
-
-namespace campusLove.Domain.Entities;
-
-public class Interacciones
+namespace CampusLove.Domain.Entities 
 {
-    public int id {get; set;}
-    public Usuarios? id_deUsuario {get; set;}
-    public Usuarios? id_paraUsuario {get; set;}
-    public char tipo {get; set;}
-    public DateTime Fecha {get; set;} = DateTime.Now;
+    public class Interacciones
+    {
+        public int Id { get; set; }
+        public Usuarios? Id_deUsuario { get; set; }
+        public Usuarios? Id_paraUsuario { get; set; }
+        public char Tipo { get; set; }
+        public DateTime Fecha { get; set; } = DateTime.Now;
+        public string? Descripcion { get; set; }
+    }
 }
+
