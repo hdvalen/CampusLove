@@ -1,14 +1,11 @@
 
-namespace campusLove.Application.UI
+using CampusLove.Application.UI;
+
+
+namespace CampusLove.Application.UI
 {
     public class MenuPrincipal
     {
-        private readonly MenuRegistro _menuRegistro;
-
-        public MenuPrincipal()
-        {
-            _menuRegistro = new MenuRegistro();
-        }
         public void MostrarMenu()
         {
             bool salir = false;
@@ -30,7 +27,7 @@ namespace campusLove.Application.UI
 
                 Console.ForegroundColor = ConsoleColor.White;
                 Console.Write("🡺 Seleccione una opción: ");
-                string opcion = Console.ReadLine();
+                string? opcion = Console.ReadLine();
                 Console.ResetColor();
 
                 switch (opcion)
@@ -42,7 +39,7 @@ namespace campusLove.Application.UI
                     case "2":
                         MostrarMensaje("Abriendo formulario de registro...", ConsoleColor.Green);
                         Console.Clear();
-                        _menuRegistro.MostrarMenu();
+
                         break;
                     case "0":
                         salir = true;
@@ -62,7 +59,7 @@ namespace campusLove.Application.UI
             Console.WriteLine("Presione cualquier tecla para salir...");
             Console.ReadKey();
         }
-        
+
         public static void MostrarMensaje(string mensaje, ConsoleColor color)
         {
             Console.ForegroundColor = color;
@@ -71,7 +68,7 @@ namespace campusLove.Application.UI
             Console.WriteLine("Presione cualquier tecla para continuar...");
             Console.ReadKey();
         }
-        
-      
+
+
     }
 }
