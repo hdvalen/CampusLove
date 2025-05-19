@@ -29,5 +29,10 @@ public class MySqlDbFactory : IDbFactory
         var connection = ConexionSingleton.Instancia(_connectionString).ObtenerConexion();
         return new CarreraRepository(connection);
     }
+    public ICoincidenciaRepository CrearCoincidenciaRepository()
+    {
+        var connection = ConexionSingleton.Instancia(_connectionString).ObtenerConexion();
+        return new CoincidenciaRepository(connection);
+    }
 }
 

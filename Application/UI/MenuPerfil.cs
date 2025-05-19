@@ -1,5 +1,7 @@
+using System.Threading.Tasks;
 using CampusLove.Domain.Entities;
 using CampusLove.Domain.Ports;
+using CampusLove.Infrastructure.Repositories;
 using Org.BouncyCastle.Crypto.Engines;
 
 namespace CampusLove.Application.UI
@@ -8,14 +10,18 @@ namespace CampusLove.Application.UI
     {
         private Usuarios _usuarioActual;
         private readonly IUsuarioRepository _usuarioRepository;
+        private readonly ICoincidenciaRepository _coincidenciaRepository;
+        private readonly VerOtrosPerfiles _verOtrosPerfiles;
 
-        public MenuPerfil(Usuarios usuarioActual, IUsuarioRepository usuarioRepository)
+        public MenuPerfil(Usuarios usuarioActual, IUsuarioRepository usuarioRepository, ICoincidenciaRepository coincidenciaRepository)
         {
             _usuarioActual = usuarioActual;
             _usuarioRepository = usuarioRepository;
+            _coincidenciaRepository = coincidenciaRepository;
+            _verOtrosPerfiles = new VerOtrosPerfiles(_usuarioActual, _usuarioRepository, _coincidenciaRepository);
         }
 
-        public void MostrarMenu()
+        public async Task MostrarMenu()
         {
             bool salir = false;
             while (!salir)
@@ -48,16 +54,15 @@ namespace CampusLove.Application.UI
                         break;
                     case "3":
                         EliminarPerfil();
-                        salir = true;
                         break;
                     case "4":
-                        // Aquí puedes agregar la opción de ver otros perfiles
+                       await _verOtrosPerfiles.MostrarMasPerfiles();
                         break;
                     case "5":
-                        // Aquí puedes agregar la opción de ver mensajes
+                        VerMatches();
                         break;
                     case "0":
-                      salir = true;
+                        salir = true;
                         break;
                     default:
                         Console.WriteLine("❌ Opción no válida. Presione una tecla para continuar...");
@@ -132,5 +137,57 @@ namespace CampusLove.Application.UI
                 Console.ReadKey();
             }
         }
+
+        private void VerMatches()
+        {
+            Console.Clear();
+            Console.WriteLine("👥 Matches:");
+
+            var matches = _coincidenciaRepository.GetAllAsync().Result;
+
+            // Filtrar matches donde al menos un usuario es el actual y el otro no es nulo
+            var matchesFiltrados = matches.Where(match =>
+                (match.id_usuario1 != null && match.id_usuario1.id != _usuarioActual.id) ||
+                (match.id_usuario2 != null && match.id_usuario2.id != _usuarioActual.id)
+            ).ToList();
+
+            if (!matchesFiltrados.Any())
+            {
+                Console.WriteLine("No tienes matches aún.");
+            }
+            else
+            {
+                foreach (var match in matchesFiltrados)
+                {
+                    Usuarios? usuarioMostrar = null;
+
+                    if (match.id_usuario1 != null && match.id_usuario1.id != _usuarioActual.id)
+                        usuarioMostrar = match.id_usuario1;
+                    else if (match.id_usuario2 != null && match.id_usuario2.id != _usuarioActual.id)
+                        usuarioMostrar = match.id_usuario2;
+
+                    if (usuarioMostrar != null)
+                    {
+                        Console.WriteLine($"📛 Nombre: {usuarioMostrar.nombre}");
+                        Console.WriteLine($"👤 Login: {usuarioMostrar.login}");
+                        Console.WriteLine($"🎂 Edad: {usuarioMostrar.edad}");
+                        Console.WriteLine($"📝 Frase de perfil: {usuarioMostrar.FrasePerfil}");
+                        Console.WriteLine($"🎓 Carrera: {usuarioMostrar.idCarrera?.Nombre}");
+                        Console.WriteLine($"⚧️ Género: {usuarioMostrar.idGenero?.Nombre}");
+                        Console.WriteLine("-----------------------------------------------------");
+                    }
+                    else
+                    {
+                        Console.WriteLine("⚠️ Información de usuario no disponible para este match.");
+                        Console.WriteLine("-----------------------------------------------------");
+                    }
+                }
+            }
+
+            Console.WriteLine("\nPresione una tecla para volver al menú...");
+            Console.ReadKey();
+        }
+
+
     }
 }

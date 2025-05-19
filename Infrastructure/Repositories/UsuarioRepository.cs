@@ -127,5 +127,25 @@ namespace CampusLove.Infrastructure.Repositories
             command.Parameters.AddWithValue("@id", id);
             return await command.ExecuteNonQueryAsync() > 0;
         }
+        async Task<object> IUsuarioRepository.AgregarLikeAsync(int id1, object id2)
+        {
+             const string query = "INSERT INTO likes (id_usuario1, id_usuario2) VALUES (@id_usuario1, @id_usuario2)";
+            using var command = new MySqlCommand(query, _connection);
+            command.Parameters.AddWithValue("@id_usuario1", id1);
+            command.Parameters.AddWithValue("@id_usuario2", id2);
+
+            return await command.ExecuteNonQueryAsync() > 0;
+        }
+
+        async Task<object> IUsuarioRepository.ExisteLikeMutuoAsync(int id1, object id2)
+        {
+            const string query = "SELECT COUNT(*) FROM likes WHERE id_usuario1 = @id_usuario1 AND id_usuario2 = @id_usuario2";
+            using var command = new MySqlCommand(query, _connection);
+            command.Parameters.AddWithValue("@id_usuario1", id1);
+            command.Parameters.AddWithValue("@id_usuario2", id2);
+
+            var result = await command.ExecuteScalarAsync();
+            return Convert.ToInt32(result) > 0;
+        }
     }
 }
