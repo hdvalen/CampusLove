@@ -7,10 +7,10 @@ using CampusLove.Domain.Ports;
 
 namespace CampusLove.Infrastructure.Repositories
 {
-    public class AdministradorRepository : IAdministradorPort
+    public class AdminRepository : IAdministrador
     {
         private readonly string _conexionString;
-        public AdministradorRepository(string conexionString)
+        public AdminRepository(string conexionString)
         {
             _conexionString = conexionString;
         }
@@ -61,7 +61,7 @@ namespace CampusLove.Infrastructure.Repositories
         }
         public Administrador ObtenerAdministradorPorId(int id)
         {
-            Administrador admin = null;
+            Administrador? admin = null;
             using (var conexion = CrearConexion())
             {
                 try
