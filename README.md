@@ -27,12 +27,10 @@ CampusLove está construido siguiendo una arquitectura hexagonal (puertos y adap
 
 ## 🛠️ Tecnologías Utilizadas
 
-- **Lenguaje**: C# 8.0
-- **Framework**: .NET 
-- **Base de Datos**: MySQL 9.3
-- **ORM**: ADO.NET (acceso directo a datos)
-- **Control de Versiones**: Git
-- **Herramientas de Desarrollo**: Visual Studio 
+-Lenguaje: C#
+-Plataforma: .NET Core 8.0
+-IDE sugerido: VS Code.
+-Mysql 
 
 
 ## 📊 Estructura de la Base de Datos
