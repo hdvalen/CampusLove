@@ -45,3 +45,6 @@ C:\Users\ususario\Documents\Valentina\campusland\C_chart\CampusLove\obj\Debug\ne
 C:\Users\ususario\Documents\Valentina\campusland\C_chart\CampusLove\obj\Debug\net8.0\CampusLove.pdb
 C:\Users\ususario\Documents\Valentina\campusland\C_chart\CampusLove\obj\Debug\net8.0\CampusLove.genruntimeconfig.cache
 C:\Users\ususario\Documents\Valentina\campusland\C_chart\CampusLove\obj\Debug\net8.0\ref\CampusLove.dll
+C:\Users\USUARIO\Music\CampusLove-1\obj\Debug\net8.0\CampusLove.dll
+C:\Users\USUARIO\Music\CampusLove-1\obj\Debug\net8.0\refint\CampusLove.dll
+C:\Users\USUARIO\Music\CampusLove-1\obj\Debug\net8.0\CampusLove.pdb

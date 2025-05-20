@@ -33,7 +33,8 @@ namespace CampusLove.Application.UI
                 Console.WriteLine("║ 🔑 ACCESO AL SISTEMA                                  ║");
                 Console.WriteLine("║   1. 🔐 Iniciar sesión                                ║");
                 Console.WriteLine("║   2. 📝 Registrarse                                   ║");
-                Console.WriteLine("║   0. 🚪 Salir                                          ║");
+                Console.WriteLine("║   3. 🧑‍💼 Administrador                                 ║");
+                Console.WriteLine("║   0. 🚪 Salir                                         ║");
                 Console.WriteLine("╚════════════════════════════════════════════════════════╝");
                 Console.ForegroundColor = ConsoleColor.White;
                 Console.ResetColor();
@@ -52,6 +53,11 @@ namespace CampusLove.Application.UI
                         MostrarMensaje("Abriendo formulario de registro, presiona una tecla...", ConsoleColor.Green);
                         Console.Clear();
                         _menuRegistro.RegistrarUsuario();
+                        break;
+                    case "3":
+                        MostrarMensaje("Abriendo formulario de registro, presiona una tecla...", ConsoleColor.Green);
+                        Console.Clear();
+                        _menuAdministrador.Administrador();
                         break;
                     case "0":
                         salir = true;
