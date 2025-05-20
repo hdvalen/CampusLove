@@ -10,13 +10,15 @@ namespace CampusLove.Application.UI
     {
         public readonly IGeneroRepository _generoRepository;
         public readonly ICarreraRepository _carreraRepository;
+        public readonly IUsuarioRepository _usuarioRepository;
 
         public MenuRegistro(MySqlConnection connection)
         {
             _generoRepository = new GeneroRepository(connection);
             _carreraRepository = new CarreraRepository(connection);
+            _usuarioRepository = new UsuarioRepository(connection);
         }
-  
+
         public void RegistrarUsuario()
         {
 
@@ -77,14 +79,29 @@ namespace CampusLove.Application.UI
                 edad = edad,
                 FrasePerfil = frasePerfil,
                 Password = contrasena,
-                login = nombreUsuario
+                login = nombreUsuario,
+                idCarrera = carreras[carreraSeleccionada - 1],
+                idGenero = generos[generoSeleccionado - 1]
             };
-            Console.ForegroundColor = ConsoleColor.Green;
-            Console.WriteLine("\n✅ Registro exitoso. ¡Bienvenido/a a Campus Love!");
-            Console.ResetColor();
+            var resultado = _usuarioRepository.InsertAsync(usuario).Result;
 
-            Console.WriteLine("\nPresione cualquier tecla para volver al menú principal...");
-            Console.ReadKey();
+            if ((bool)resultado)
+            {
+                Console.ForegroundColor = ConsoleColor.Green;
+                Console.WriteLine("\n✅ Registro exitoso. ¡Bienvenido/a a Campus Love!");
+                Console.ResetColor();
+                Console.WriteLine("\nPresione cualquier tecla para volver al menú principal...");
+                Console.ReadKey();
+                return;
+            }
+            else
+            {
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.WriteLine("\n❌ Error al registrar el usuario. Intente de nuevo.");
+                Console.ResetColor();
+            }
+
+            
         }
         public static string LeerContraseñaConAsteriscos()
 {
