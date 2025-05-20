@@ -40,7 +40,7 @@ namespace CampusLove.Application.UI
                 Console.WriteLine("║   3. Eliminar mi perfil                                ║");
                 Console.WriteLine("║   4. Ver otros perfiles                                ║");
                 Console.WriteLine("║   5. Ver mis intereses                                 ║");
-                Console.WriteLine("║   5. Ver Matches                                       ║");
+                Console.WriteLine("║   6. Ver Matches                                       ║");
                 Console.WriteLine("║   0. Volver al menú principal                          ║");
                 Console.WriteLine("╚════════════════════════════════════════════════════════╝");
                 Console.ResetColor();
@@ -154,7 +154,7 @@ private async Task VerMatches()
 
         var matches = await _coincidenciaRepository.GetMatchesByUsuarioAsync(_usuarioActual.id);
 
-        if (!matches.Any())
+        if (matches == null || !matches.Any())
         {
             Console.WriteLine("\n😔 No tienes matches aún. ¡Sigue buscando!");
         }
@@ -162,7 +162,15 @@ private async Task VerMatches()
         {
             foreach (var match in matches)
             {
-                var otroUsuario = match.id_usuario1?.id == _usuarioActual.id ? match.id_usuario2 : match.id_usuario1;
+                // Aseguramos que ambos usuarios existan
+                if (match.id_usuario1 == null || match.id_usuario2 == null)
+                {
+                    continue; // Ignoramos este match si le falta un usuario
+                }
+
+                var otroUsuario = match.id_usuario1.id == _usuarioActual.id
+                    ? match.id_usuario2
+                    : match.id_usuario1;
 
                 if (otroUsuario != null)
                 {
@@ -170,9 +178,9 @@ private async Task VerMatches()
                     Console.WriteLine("╔════════════════════════════════════════════════════════╗");
                     Console.WriteLine($"║ 📛 Nombre: {otroUsuario.nombre,-44}║");
                     Console.WriteLine($"║ 🎂 Edad: {otroUsuario.edad,-47}║");
-                    Console.WriteLine($"║ 📝 Frase de perfil: {(otroUsuario.FrasePerfil?.Length > 35 ? otroUsuario.FrasePerfil.Substring(0, 35) + "..." : otroUsuario.FrasePerfil),-35}║");
-                    Console.WriteLine($"║ 🎓 Carrera: {otroUsuario.idCarrera?.Nombre,-44}║");
-                    Console.WriteLine($"║ ⚧️ Género: {otroUsuario.idGenero?.Nombre,-46}║");
+                    Console.WriteLine($"║ 📝 Frase de perfil: {(string.IsNullOrEmpty(otroUsuario.FrasePerfil) ? "No definida" : (otroUsuario.FrasePerfil.Length > 35 ? otroUsuario.FrasePerfil.Substring(0, 35) + "..." : otroUsuario.FrasePerfil)),-35}║");
+                    Console.WriteLine($"║ 🎓 Carrera: {otroUsuario.idCarrera?.Nombre ?? "No definida",-44}║");
+                    Console.WriteLine($"║ ⚧️ Género: {otroUsuario.idGenero?.Nombre ?? "No definido",-46}║");
                     Console.WriteLine($"║ 💘 Match desde: {match.FechaMatch.ToString("dd/MM/yyyy HH:mm"),-38}║");
                     Console.WriteLine("╚════════════════════════════════════════════════════════╝");
                     Console.ResetColor();
