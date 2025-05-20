@@ -40,7 +40,9 @@ namespace CampusLove.Application.UI
                 Console.ForegroundColor = ConsoleColor.Green;
                 Console.WriteLine($"\n✅ ¡Bienvenido/a {usuario.login}! Has iniciado sesión correctamente.");
                 Console.ResetColor();
-                _menuPerfil = new MenuPerfil(usuario, _usuarioRepository, new CoincidenciaRepository(_usuarioRepository.GetConnection(), _usuarioRepository));
+                var coincidenciaRepository = new CoincidenciaRepository(_usuarioRepository.GetConnection(), _usuarioRepository);
+                var interesesRepository = new InteresesRepository(_usuarioRepository.GetConnection());
+                _menuPerfil = new MenuPerfil(usuario, _usuarioRepository, coincidenciaRepository, interesesRepository);
                 await _menuPerfil.MostrarMenu();
             }
             else

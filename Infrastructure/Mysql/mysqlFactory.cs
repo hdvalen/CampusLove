@@ -35,5 +35,15 @@ public class MySqlDbFactory : IDbFactory
         var usuarioRepository = CrearUsuarioRepository();
         return new CoincidenciaRepository(connection, usuarioRepository);
     }
+    public IInteresesRepository CrearInteresesRepository()
+    {
+        var connection = ConexionSingleton.Instancia(_connectionString).ObtenerConexion();
+        return new InteresesRepository(connection);
+    }
+    public IUsuarioInteresesRepository CrearUsuarioInteresesRepository()
+    {
+        var connection = ConexionSingleton.Instancia(_connectionString).ObtenerConexion();
+        return (IUsuarioInteresesRepository)new UsuarioInteresesRepository(connection);
+    }
 }
 

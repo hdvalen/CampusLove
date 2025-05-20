@@ -56,7 +56,14 @@ CREATE TABLE  IF NOT EXISTS coincidencias (
     CONSTRAINT id_usuario1_fk FOREIGN KEY (id_usuario1) REFERENCES usuarios(id),
     CONSTRAINT id_usuario2_fk FOREIGN KEY (id_usuario2) REFERENCES usuarios(id)
 );
-
+CREATE TABLE IF NOT EXISTS likes (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    id_usuario1 INT NOT NULL,
+    id_usuario2 INT NOT NULL,
+    fecha_creacion DATETIME DEFAULT CURRENT_TIMESTAMP,
+    CONSTRAINT likes_usuario1_fk FOREIGN KEY (id_usuario1) REFERENCES usuarios(id),
+    CONSTRAINT likes_usuario2_fk FOREIGN KEY (id_usuario2) REFERENCES usuarios(id)
+);
 CREATE TABLE IF NOT EXISTS administradores (
     id INT AUTO_INCREMENT PRIMARY KEY,
     nombre VARCHAR(70) NOT NULL,
