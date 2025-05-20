@@ -9,13 +9,13 @@ namespace CampusLove.Application.UI
     public class MenuPrincipal
     {
         private readonly MenuRegistro _menuRegistro;
-        private readonly MenuUsuario _menuUsuario;
+        private readonly MenuUsurio _menuUsuario;
 
         public MenuPrincipal()
         {
             var connection = dbSettings.GetConnection();
             _menuRegistro = new MenuRegistro(connection);
-            _menuUsuario = new MenuUsuario(connection);
+            _menuUsuario = new MenuUsurio(connection);
         }
         public async Task MostrarMenu()
         {

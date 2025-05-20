@@ -84,19 +84,21 @@ namespace CampusLove.Application.UI
                 idGenero = generos[generoSeleccionado - 1]
             };
             var resultado = _usuarioRepository.InsertAsync(usuario).Result;
-            if (resultado)
+
+            if ((bool)resultado)
             {
-            Console.ForegroundColor = ConsoleColor.Green;
-            Console.WriteLine("\n✅ Registro exitoso. ¡Bienvenido/a a Campus Love!");
-            Console.ResetColor();
-            Console.WriteLine("\nPresione cualquier tecla para volver al menú principal...");
-            Console.ReadKey();
+                Console.ForegroundColor = ConsoleColor.Green;
+                Console.WriteLine("\n✅ Registro exitoso. ¡Bienvenido/a a Campus Love!");
+                Console.ResetColor();
+                Console.WriteLine("\nPresione cualquier tecla para volver al menú principal...");
+                Console.ReadKey();
                 return;
-            }else
+            }
+            else
             {
                 Console.ForegroundColor = ConsoleColor.Red;
-            Console.WriteLine("\n❌ Error al registrar el usuario. Intente de nuevo.");
-            Console.ResetColor();
+                Console.WriteLine("\n❌ Error al registrar el usuario. Intente de nuevo.");
+                Console.ResetColor();
             }
 
             

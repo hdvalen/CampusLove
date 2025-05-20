@@ -4,14 +4,14 @@ namespace CampusLove
 {
     class Program
     {
-        static void Main(string[] args)
+        static async Task Main(string[] args)
         {
             // Iniciar la aplicación
             try
             {
                 // Crear y ejecutar el menú principal
                 MenuPrincipal menu = new MenuPrincipal();
-                menu.MostrarMenu();
+                await menu.MostrarMenu();
             }
             catch (Exception ex)
             {

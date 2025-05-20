@@ -1,4 +1,3 @@
-
 using CampusLove.Domain.Entities;
 using CampusLove.Domain.Ports;
 using CampusLove.Repositories;
@@ -15,6 +14,10 @@ namespace CampusLove.Infrastructure.Repositories
             _connection = connection;
         }
 
+        public MySqlConnection GetConnection()
+        {
+            return _connection;
+        }
 
         public async Task<IEnumerable<Usuarios>> GetAllAsync()
         {
@@ -90,17 +93,17 @@ namespace CampusLove.Infrastructure.Repositories
             return null;
         }
 
-        public async Task<bool> InsertAsync(Usuarios entity)
+        async Task<object> IUsuarioRepository.InsertAsync(Usuarios usuarios)
         {
             const string query = "INSERT INTO usuarios (nombre, edad, FrasePerfil, login, Password, id_carrera, id_genero) VALUES (@nombre, @edad, @FrasePerfil, @login, @Password, @id_carrera, @id_genero)";
             using var command = new MySqlCommand(query, _connection);
-            command.Parameters.AddWithValue("@nombre", entity.nombre);
-            command.Parameters.AddWithValue("@edad", entity.edad);
-            command.Parameters.AddWithValue("@FrasePerfil", entity.FrasePerfil);
-            command.Parameters.AddWithValue("@login", entity.login);
-            command.Parameters.AddWithValue("@Password", entity.Password);
-            command.Parameters.AddWithValue("@id_carrera", entity.idCarrera?.Id ?? 0);
-            command.Parameters.AddWithValue("@id_genero", entity.idGenero?.Id ?? 0);
+            command.Parameters.AddWithValue("@nombre", usuarios.nombre);
+            command.Parameters.AddWithValue("@edad", usuarios.edad);
+            command.Parameters.AddWithValue("@FrasePerfil", usuarios.FrasePerfil);
+            command.Parameters.AddWithValue("@login", usuarios.login);
+            command.Parameters.AddWithValue("@Password", usuarios.Password);
+            command.Parameters.AddWithValue("@id_carrera", usuarios.idCarrera?.Id ?? 0);
+            command.Parameters.AddWithValue("@id_genero", usuarios.idGenero?.Id ?? 0);
             return await command.ExecuteNonQueryAsync() > 0;
         }
 
@@ -122,14 +125,14 @@ namespace CampusLove.Infrastructure.Repositories
 
         public async Task<bool> DeleteAsync(object id)
         {
-             const string query = "DELETE FROM usuarios WHERE id = @id";
+            const string query = "DELETE FROM usuarios WHERE id = @id";
             using var command = new MySqlCommand(query, _connection);
             command.Parameters.AddWithValue("@id", id);
             return await command.ExecuteNonQueryAsync() > 0;
         }
         async Task<object> IUsuarioRepository.AgregarLikeAsync(int id1, object id2)
         {
-             const string query = "INSERT INTO likes (id_usuario1, id_usuario2) VALUES (@id_usuario1, @id_usuario2)";
+            const string query = "INSERT INTO likes (id_usuario1, id_usuario2) VALUES (@id_usuario1, @id_usuario2)";
             using var command = new MySqlCommand(query, _connection);
             command.Parameters.AddWithValue("@id_usuario1", id1);
             command.Parameters.AddWithValue("@id_usuario2", id2);
@@ -147,5 +150,55 @@ namespace CampusLove.Infrastructure.Repositories
             var result = await command.ExecuteScalarAsync();
             return Convert.ToInt32(result) > 0;
         }
+        async Task<bool> IUsuarioRepository.ExisteLikeAsync(int id1, int id2)
+        {
+            const string query = "SELECT COUNT(*) FROM likes WHERE id_usuario1 = @id_usuario1 AND id_usuario2 = @id_usuario2";
+            using var command = new MySqlCommand(query, _connection);
+            command.Parameters.AddWithValue("@id_usuario1", id1);
+            command.Parameters.AddWithValue("@id_usuario2", id2);
+
+            var result = await command.ExecuteScalarAsync();
+            return Convert.ToInt32(result) > 0;
+        }
+
+        async Task<object> IUsuarioRepository.SaveLikeAsync(int id1, int id2)
+        {
+            const string query = "INSERT INTO likes (id_usuario1, id_usuario2) VALUES (@id_usuario1, @id_usuario2)";
+            using var command = new MySqlCommand(query, _connection);
+            command.Parameters.AddWithValue("@id_usuario1", id1); 
+            command.Parameters.AddWithValue("@id_usuario2", id2);
+
+            return await command.ExecuteNonQueryAsync() > 0;
+        }
+
+        public async Task<bool> InsertUsuarioAsync(int id, Usuarios entity)
+        {
+            const string query = "INSERT INTO usuarios (nombre, edad, FrasePerfil, login, Password, id_carrera, id_genero) VALUES (@nombre, @edad, @FrasePerfil, @login, @Password, @id_carrera, @id_genero)";
+            using var command = new MySqlCommand(query, _connection);
+            command.Parameters.AddWithValue("@nombre", entity.nombre);
+            command.Parameters.AddWithValue("@edad", entity.edad);
+            command.Parameters.AddWithValue("@FrasePerfil", entity.FrasePerfil);
+            command.Parameters.AddWithValue("@login", entity.login);
+            command.Parameters.AddWithValue("@Password", entity.Password);
+            command.Parameters.AddWithValue("@id_carrera", entity.idCarrera?.Id ?? 0);
+            command.Parameters.AddWithValue("@id_genero", entity.idGenero?.Id ?? 0);
+            return await command.ExecuteNonQueryAsync() > 0;
+        }
+
+        public async Task<bool> InsertAsync(int id, Usuarios entity)
+        {
+           const string query = "INSERT INTO usuarios (nombre, edad, FrasePerfil, login, Password, id_carrera, id_genero) VALUES (@nombre, @edad, @FrasePerfil, @login, @Password, @id_carrera, @id_genero)";
+            using var command = new MySqlCommand(query, _connection);
+            command.Parameters.AddWithValue("@nombre", entity.nombre);
+            command.Parameters.AddWithValue("@edad", entity.edad);
+            command.Parameters.AddWithValue("@FrasePerfil", entity.FrasePerfil);
+            command.Parameters.AddWithValue("@login", entity.login);
+            command.Parameters.AddWithValue("@Password", entity.Password);
+            command.Parameters.AddWithValue("@id_carrera", entity.idCarrera?.Id ?? 0);
+            command.Parameters.AddWithValue("@id_genero", entity.idGenero?.Id ?? 0);
+            return await command.ExecuteNonQueryAsync() > 0;
+        }
+
+        
     }
 }

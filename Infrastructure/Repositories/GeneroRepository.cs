@@ -55,7 +55,7 @@ namespace CampusLove.Infrastructure.Repositories
             return null;
         }
         
-        public async Task<bool> InsertAsync(Genero entity)
+        public async Task<bool> InsertAsync(int id, Genero entity)
         {
             const string query = "INSERT INTO generos (id, nombre) VALUES (@Id, @Nombre)";
             using var command = new MySqlCommand(query, _connection);
@@ -83,5 +83,6 @@ namespace CampusLove.Infrastructure.Repositories
             
             return await command.ExecuteNonQueryAsync() > 0;
         }
+
     }
 }

@@ -5,15 +5,14 @@ using MySql.Data.MySqlClient;
 
 namespace CampusLove.Application.UI
 {
-    public class MenuUsuario
+    public class MenuUsurio
     {
         private readonly UsuarioRepository _usuarioRepository;
-        private readonly MenuPerfil _menuPerfil;
+        private MenuPerfil? _menuPerfil;
 
-        public MenuUsuario(MySqlConnection connection)
+        public MenuUsurio(MySqlConnection connection)
         {
             _usuarioRepository = new UsuarioRepository(connection);
-            _menuPerfil = new MenuPerfil(new Usuarios(), _usuarioRepository, new CoincidenciaRepository(connection));
         }
 
         public async Task IniciarSesion()
@@ -41,7 +40,8 @@ namespace CampusLove.Application.UI
                 Console.ForegroundColor = ConsoleColor.Green;
                 Console.WriteLine($"\n✅ ¡Bienvenido/a {usuario.login}! Has iniciado sesión correctamente.");
                 Console.ResetColor();
-               await _menuPerfil.MostrarMenu();
+                _menuPerfil = new MenuPerfil(usuario, _usuarioRepository, new CoincidenciaRepository(_usuarioRepository.GetConnection(), _usuarioRepository));
+                await _menuPerfil.MostrarMenu();
             }
             else
             {

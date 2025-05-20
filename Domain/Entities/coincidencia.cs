@@ -1,5 +1,4 @@
-
-namespace campusLove.Domain.Entities;
+namespace CampusLove.Domain.Entities;
 
 public class Coincidencias
 {

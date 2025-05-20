@@ -1,3 +1,4 @@
+using CampusLove.Domain.Entities;
 using CampusLove.Domain.Ports;
 
 namespace CampusLove.Application.UI
@@ -93,41 +94,86 @@ namespace CampusLove.Application.UI
 
                     switch (opcion)
                     {
-                        case "0":
-                            return;
-
                         case "L":
-                            if (_likesDisponibles <= 0)
+                            try
                             {
-                                Console.WriteLine("❌ Ya no te quedan más likes por hoy.");
+                                if (_likesDisponibles == 0)
+                                {
+                                    Console.WriteLine("❌ Ya no tienes likes disponibles por hoy.");
+                                    opcionValida = true;
+                                    break;
+                                }
+
+                                // Verificar que los IDs sean válidos
+                                if (_usuarioActual?.id <= 0)
+                                {
+                                    Console.WriteLine("❌ Error: ID de usuario actual no válido.");
+                                    opcionValida = true;
+                                    break;
+                                }
+
+                                if (usuario?.id <= 0)
+                                {
+                                    Console.WriteLine("❌ Error: ID de usuario destino no válido.");
+                                    opcionValida = true;
+                                    break;
+                                }
+
+                                bool yaLeDioLike = await _usuarioRepository.ExisteLikeAsync(_usuarioActual.id, usuario.id);
+                                if (yaLeDioLike)
+                                {
+                                    Console.WriteLine("⚠️ Ya le diste like a este usuario anteriormente.");
+                                    opcionValida = true;
+                                    break;
+                                }
+
+                                await _usuarioRepository.SaveLikeAsync(_usuarioActual.id, usuario.id);
+                                _likesDisponibles--;
+                                _usuariosConLike.Add(usuario.id);
+
+                                Console.WriteLine($"💘 ¡Le diste like a {usuario.nombre}!");
+
+                                // Verificar si el otro también le dio like al actual -> MATCH
+                                bool elOtroDioLike = await _usuarioRepository.ExisteLikeAsync(usuario.id, _usuarioActual.id);
+                                if (elOtroDioLike)
+                                {
+                                    try
+                                    {
+                                        await _coincidenciaRepository.InsertCoincidenciaAsync(
+                                            0,
+                                            new Coincidencias
+                                            {
+                                                id_usuario1 = _usuarioActual,
+                                                id_usuario2 = usuario,
+                                                FechaMatch = DateTime.Now
+                                            }
+                                        );
+                                        Console.ForegroundColor = ConsoleColor.Green;
+                                        Console.WriteLine($"🎉 ¡Es un match con {usuario.nombre}! Pueden comenzar a hablar.");
+                                        Console.ResetColor();
+                                    }
+                                    catch (Exception ex)
+                                    {
+                                        Console.WriteLine($"⚠️ Hubo un error al registrar el match: {ex.Message}");
+                                    }
+                                }
+
+                                opcionValida = true;
+                            }
+                            catch (Exception ex)
+                            {
+                                Console.WriteLine($"❌ Error al procesar el like: {ex.Message}");
+                                Console.WriteLine("Presiona una tecla para continuar...");
                                 Console.ReadKey();
-                                return;
+                                opcionValida = false; // Permitir intentar de nuevo
                             }
-
-                            await _usuarioRepository.AgregarLikeAsync(_usuarioActual.id, usuario.id);
-                            _usuariosConLike.Add(usuario.id);
-                            _likesDisponibles--;
-
-                            var likeMutuoResult = await _usuarioRepository.ExisteLikeMutuoAsync(_usuarioActual.id, usuario.id);
-                            bool esMatch = Convert.ToBoolean(likeMutuoResult);
-
-                            Console.WriteLine($"💘 ¡Le diste like a {usuario.nombre}!");
-
-                            if (esMatch)
-                            {
-                                Console.ForegroundColor = ConsoleColor.Green;
-                                Console.WriteLine("🎉 ¡MATCH! A ambos les gustaron sus perfiles. ❤️");
-                                Console.ResetColor();
-                            }
-
-                            opcionValida = true;
                             break;
-
-                        case "D":
+                        case "D": 
                             Console.WriteLine($"👎 Diste dislike a {usuario.nombre}.");
                             opcionValida = true;
                             break;
-
+                        case "0":
+                            return;
                         default:
                             Console.WriteLine("❌ Opción inválida. Intenta de nuevo.");
                             Console.ReadKey();

@@ -1,7 +1,6 @@
-
 using MySql.Data.MySqlClient;
 using CampusLove.Domain.Ports;
-using campusLove.Domain.Entities;
+using CampusLove.Domain.Entities;
 using CampusLove.Repositories;
 
 namespace CampusLove.Infrastructure.Repositories
@@ -9,22 +8,24 @@ namespace CampusLove.Infrastructure.Repositories
     public class CoincidenciaRepository : IGenericRepository<Coincidencias>, ICoincidenciaRepository
     {
         private readonly MySqlConnection _connection;
+        private readonly IUsuarioRepository _usuarioRepository;
 
-        public CoincidenciaRepository(MySqlConnection connection)
+        public CoincidenciaRepository(MySqlConnection connection, IUsuarioRepository usuarioRepository)
         {
             _connection = connection;
+            _usuarioRepository = usuarioRepository;
         }
 
         public async Task<Coincidencias?> GetByIdAsync(object id)
         {
-            const string query = @"SELECT c.id, c.fecha_match, 
-        u1.id AS id_usuario1, u1.nombre AS nombre1, u1.edad AS edad1, u1.FrasePerfil AS FrasePerfil1, u1.login AS login1, u1.Password AS Password1,
-        u2.id AS id_usuario2, u2.nombre AS nombre2, u2.edad AS edad2, u2.FrasePerfil AS FrasePerfil2, u2.login AS login2, u2.Password AS Password2
-        FROM coincidencias c
-        JOIN usuarios u1 ON c.id_usuario1 = u1.id
-        JOIN usuarios u2 ON c.id_usuario2 = u2.id
-        WHERE c.id = @id
-";
+            const string query = @"SELECT c.id, c.FechaMatch, 
+                    u1.id AS id_usuario1, u1.nombre AS nombre1, u1.edad AS edad1, u1.FrasePerfil AS FrasePerfil1, u1.login AS login1, u1.Password AS Password1,
+                    u2.id AS id_usuario2, u2.nombre AS nombre2, u2.edad AS edad2, u2.FrasePerfil AS FrasePerfil2, u2.login AS login2, u2.Password AS Password2
+                    FROM coincidencias c
+                    JOIN usuarios u1 ON c.id_usuario1 = u1.id
+                    JOIN usuarios u2 ON c.id_usuario2 = u2.id
+                    WHERE c.id = @id
+            ";
             using var command = new MySqlCommand(query, _connection);
             command.Parameters.AddWithValue("@id", id);
 
@@ -34,7 +35,7 @@ namespace CampusLove.Infrastructure.Repositories
                 return new Coincidencias
                 {
                     id = Convert.ToInt32(reader["id"]),
-                    FechaMatch = DateTime.Parse(reader["fecha_match"].ToString() ?? string.Empty),
+                    FechaMatch = DateTime.Parse(reader["FechaMatch"].ToString() ?? string.Empty),
                     id_usuario1 = new Usuarios
                     {
                         id = Convert.ToInt32(reader["id_usuario1"]),
@@ -61,41 +62,77 @@ namespace CampusLove.Infrastructure.Repositories
         }
          public async Task<IEnumerable<Coincidencias>> GetAllAsync()
         {
-            const string query = "SELECT c.id, c.fecha_match, u1.id AS id_usuario1, u1.nombre AS nombre1, u1.edad AS edad1, u1.FrasePerfil AS FrasePerfil1, u1.login AS login1, u1.Password AS Password1, u2.id AS id_usuario2, u2.nombre AS nombre2, u2.edad AS edad2, u2.FrasePerfil AS FrasePerfil2, u2.login AS login2, u2.Password AS Password2 FROM coincidencias c JOIN usuarios u1 ON c.id_usuario1 = u1.id JOIN usuarios u2 ON c.id_usuario2 = u2.id";
+            string query = @"
+                SELECT 
+                    c.id, 
+                    c.FechaMatch,
+                    u1.id AS id_usuario1, 
+                    u1.nombre AS nombre1, 
+                    u1.edad AS edad1, 
+                    u1.FrasePerfil AS FrasePerfil1,
+                    u1.login AS login1,
+                    u1.Password AS Password1,
+                    c1.Nombre AS carrera1,
+                    g1.Nombre AS genero1,
+                    u2.id AS id_usuario2, 
+                    u2.nombre AS nombre2, 
+                    u2.edad AS edad2, 
+                    u2.FrasePerfil AS FrasePerfil2,
+                    u2.login AS login2,
+                    u2.Password AS Password2,
+                    c2.Nombre AS carrera2,
+                    g2.Nombre AS genero2
+                FROM coincidencias c
+                JOIN usuarios u1 ON c.id_usuario1 = u1.id
+                JOIN usuarios u2 ON c.id_usuario2 = u2.id
+                LEFT JOIN carreras c1 ON u1.id_carrera = c1.id
+                LEFT JOIN carreras c2 ON u2.id_carrera = c2.id
+                LEFT JOIN generos g1 ON u1.id_genero = g1.id
+                LEFT JOIN generos g2 ON u2.id_genero = g2.id
+                ORDER BY c.FechaMatch DESC";
+
             using var command = new MySqlCommand(query, _connection);
             var coincidenciasList = new List<Coincidencias>();
 
             using var reader = await command.ExecuteReaderAsync();
             while (await reader.ReadAsync())
             {
+                var usuario1 = new Usuarios
+                {
+                    id = Convert.ToInt32(reader["id_usuario1"]),
+                    nombre = reader["nombre1"].ToString() ?? string.Empty,
+                    edad = Convert.ToInt32(reader["edad1"]),
+                    FrasePerfil = reader["FrasePerfil1"].ToString() ?? string.Empty,
+                    login = reader["login1"].ToString() ?? string.Empty,
+                    Password = reader["Password1"].ToString() ?? string.Empty,
+                    idCarrera = new Carrera { Nombre = reader["carrera1"].ToString() ?? string.Empty },
+                    idGenero = new Genero { Nombre = reader["genero1"].ToString() ?? string.Empty }
+                };
+
+                var usuario2 = new Usuarios
+                {
+                    id = Convert.ToInt32(reader["id_usuario2"]),
+                    nombre = reader["nombre2"].ToString() ?? string.Empty,
+                    edad = Convert.ToInt32(reader["edad2"]),
+                    FrasePerfil = reader["FrasePerfil2"].ToString() ?? string.Empty,
+                    login = reader["login2"].ToString() ?? string.Empty,
+                    Password = reader["Password2"].ToString() ?? string.Empty,
+                    idCarrera = new Carrera { Nombre = reader["carrera2"].ToString() ?? string.Empty },
+                    idGenero = new Genero { Nombre = reader["genero2"].ToString() ?? string.Empty }
+                };
+
                 coincidenciasList.Add(new Coincidencias
                 {
                     id = Convert.ToInt32(reader["id"]),
-                    FechaMatch = reader["fecha_match"] != DBNull.Value ? Convert.ToDateTime(reader["fecha_match"]) : DateTime.MinValue,
-                    id_usuario1 = new Usuarios
-                    {
-                        id = Convert.ToInt32(reader["id_usuario1"]),
-                        nombre = reader["nombre1"].ToString() ?? string.Empty,
-                        edad = Convert.ToInt32(reader["edad1"]),
-                        FrasePerfil = reader["FrasePerfil1"].ToString() ?? string.Empty,
-                        login = reader["login1"].ToString() ?? string.Empty,
-                        Password = reader["Password1"].ToString() ?? string.Empty,
-                    },
-                    id_usuario2 = new Usuarios
-                    {
-                        id = Convert.ToInt32(reader["id_usuario2"]),
-                        nombre = reader["nombre2"].ToString() ?? string.Empty,
-                        edad = Convert.ToInt32(reader["edad2"]),
-                        FrasePerfil = reader["FrasePerfil2"].ToString() ?? string.Empty,
-                        login = reader["login2"].ToString() ?? string.Empty,
-                        Password = reader["Password2"].ToString() ?? string.Empty,
-                    }
+                    FechaMatch = reader["FechaMatch"] != DBNull.Value ? Convert.ToDateTime(reader["FechaMatch"]) : DateTime.MinValue,
+                    id_usuario1 = usuario1,
+                    id_usuario2 = usuario2
                 });
             }
 
             return coincidenciasList;
         }
-        public async Task<bool> InsertAsync(Coincidencias coincidencias)
+        public async Task<bool> InsertAsync(int id, Coincidencias coincidencias)
         {
             const string query = "INSERT INTO coincidencias (id_usuario1, id_usuario2) VALUES (@id_usuario1, @id_usuario2)";
             using var command = new MySqlCommand(query, _connection);
@@ -123,6 +160,55 @@ namespace CampusLove.Infrastructure.Repositories
             return await command.ExecuteNonQueryAsync() > 0;
         }
 
-       
+        public async Task InsertCoincidenciaAsync(int id, Coincidencias coincidencias)
+        {
+            const string query = @"
+                INSERT INTO coincidencias (id_usuario1, id_usuario2, FechaMatch) 
+                VALUES (@id_usuario1, @id_usuario2, CURRENT_TIMESTAMP)";
+            
+            using var command = new MySqlCommand(query, _connection);
+            command.Parameters.AddWithValue("@id_usuario1", coincidencias.id_usuario1?.id ?? 0);
+            command.Parameters.AddWithValue("@id_usuario2", coincidencias.id_usuario2?.id ?? 0);
+
+            await command.ExecuteNonQueryAsync();
+        }
+
+        public async Task<IEnumerable<Coincidencias>> GetMatchesByUsuarioAsync(int usuarioId)
+        {
+            string query = @"
+                SELECT 
+                    c.id,
+                    c.FechaMatch,
+                    c.id_usuario1,
+                    c.id_usuario2
+                FROM coincidencias c
+                WHERE c.id_usuario1 = @usuarioId OR c.id_usuario2 = @usuarioId
+                ORDER BY c.FechaMatch DESC";
+
+            using var command = new MySqlCommand(query, _connection);
+            command.Parameters.AddWithValue("@usuarioId", usuarioId);
+            var coincidenciasList = new List<Coincidencias>();
+
+            using var reader = await command.ExecuteReaderAsync();
+            while (await reader.ReadAsync())
+            {
+                // Obtener los usuarios completos usando el repositorio de usuarios
+                var idUsuario1 = Convert.ToInt32(reader["id_usuario1"]);
+                var idUsuario2 = Convert.ToInt32(reader["id_usuario2"]);
+                
+                var usuario1 = await _usuarioRepository.GetByIdAsync(idUsuario1);
+                var usuario2 = await _usuarioRepository.GetByIdAsync(idUsuario2);
+
+                coincidenciasList.Add(new Coincidencias
+                {
+                    id = Convert.ToInt32(reader["id"]),
+                    FechaMatch = reader["FechaMatch"] != DBNull.Value ? Convert.ToDateTime(reader["FechaMatch"]) : DateTime.MinValue,
+                    id_usuario1 = usuario1,
+                    id_usuario2 = usuario2
+                });
+            }
+
+            return coincidenciasList;
+        }
     }
 }

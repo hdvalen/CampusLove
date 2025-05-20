@@ -1,8 +1,6 @@
 using System.Threading.Tasks;
 using CampusLove.Domain.Entities;
 using CampusLove.Domain.Ports;
-using CampusLove.Infrastructure.Repositories;
-using Org.BouncyCastle.Crypto.Engines;
 
 namespace CampusLove.Application.UI
 {
@@ -29,7 +27,7 @@ namespace CampusLove.Application.UI
                 Console.Clear();
                 Console.ForegroundColor = ConsoleColor.Cyan;
                 Console.WriteLine("╔════════════════════════════════════════════════════════╗");
-                Console.WriteLine("║                  ❤️ CAMPUS LOVE ❤️                    ║");
+                Console.WriteLine("║                   ❤️  CAMPUS LOVE  ❤️                    ║");
                 Console.WriteLine("╠════════════════════════════════════════════════════════╣");
                 Console.ForegroundColor = ConsoleColor.Yellow;
                 Console.WriteLine("║ 📝 PERFIL DE USUARIO                                   ║");
@@ -56,10 +54,10 @@ namespace CampusLove.Application.UI
                         EliminarPerfil();
                         break;
                     case "4":
-                       await _verOtrosPerfiles.MostrarMasPerfiles();
+                       _verOtrosPerfiles.MostrarMasPerfiles().Wait();
                         break;
                     case "5":
-                        VerMatches();
+                        //await VerMatches();
                         break;
                     case "0":
                         salir = true;
@@ -77,7 +75,7 @@ namespace CampusLove.Application.UI
             Console.Clear();
             Console.ForegroundColor = ConsoleColor.Cyan;
             Console.WriteLine("╔════════════════════════════════════════════════════════╗");
-            Console.WriteLine("║                  ❤️ CAMPUS LOVE ❤️                    ║");
+            Console.WriteLine("║                     ❤️ CAMPUS LOVE ❤️                 ║");
             Console.WriteLine("╠════════════════════════════════════════════════════════╣");
             Console.ResetColor();
 
@@ -138,56 +136,57 @@ namespace CampusLove.Application.UI
             }
         }
 
-        private void VerMatches()
-        {
-            Console.Clear();
-            Console.WriteLine("👥 Matches:");
+        // private async Task VerMatches()
+        // {
+        //     try
+        //     {
+        //         Console.Clear();
+        //         Console.ForegroundColor = ConsoleColor.Cyan;
+        //         Console.WriteLine("╔════════════════════════════════════════════════════════╗");
+        //         Console.WriteLine("║                    ❤️ MIS MATCHES ❤️                 ║");
+        //         Console.WriteLine("╠════════════════════════════════════════════════════════╣");
+        //         Console.ResetColor();
 
-            var matches = _coincidenciaRepository.GetAllAsync().Result;
+        //         var matches = await _coincidenciaRepository.GetMatchesByUsuarioAsync(_usuarioActual.id);
 
-            // Filtrar matches donde al menos un usuario es el actual y el otro no es nulo
-            var matchesFiltrados = matches.Where(match =>
-                (match.id_usuario1 != null && match.id_usuario1.id != _usuarioActual.id) ||
-                (match.id_usuario2 != null && match.id_usuario2.id != _usuarioActual.id)
-            ).ToList();
+        //         if (!matches.Any())
+        //         {
+        //             Console.WriteLine("\n😔 No tienes matches aún. ¡Sigue buscando!");
+        //         }
+        //         else
+        //         {
+        //             foreach (var match in matches)
+        //             {
+        //                 // Determinar cuál es el otro usuario (no el actual)
+        //                 var otroUsuario = match.id_usuario1?.id == _usuarioActual.id ? match.id_usuario2 : match.id_usuario1;
 
-            if (!matchesFiltrados.Any())
-            {
-                Console.WriteLine("No tienes matches aún.");
-            }
-            else
-            {
-                foreach (var match in matchesFiltrados)
-                {
-                    Usuarios? usuarioMostrar = null;
+        //                 if (otroUsuario != null)
+        //                 {
+        //                     Console.ForegroundColor = ConsoleColor.Magenta;
+        //                     Console.WriteLine("╔════════════════════════════════════════════════════════╗");
+        //                     Console.WriteLine($"║ 📛 Nombre: {otroUsuario.nombre,-44}║");
+        //                     Console.WriteLine($"║ 🎂 Edad: {otroUsuario.edad,-47}║");
+        //                     Console.WriteLine($"║ 📝 Frase de perfil: {(otroUsuario.FrasePerfil?.Length > 35 ? otroUsuario.FrasePerfil.Substring(0, 35) + "..." : otroUsuario.FrasePerfil),-35}║");
+        //                     Console.WriteLine($"║ 🎓 Carrera: {otroUsuario.idCarrera?.Nombre,-44}║");
+        //                     Console.WriteLine($"║ ⚧️ Género: {otroUsuario.idGenero?.Nombre,-46}║");
+        //                     Console.WriteLine($"║ 💘 Match desde: {match.FechaMatch.ToString("dd/MM/yyyy HH:mm"),-38}║");
+        //                     Console.WriteLine("╚════════════════════════════════════════════════════════╝");
+        //                     Console.ResetColor();
+        //                     Console.WriteLine();
+        //                 }
+        //             }
+        //         }
 
-                    if (match.id_usuario1 != null && match.id_usuario1.id != _usuarioActual.id)
-                        usuarioMostrar = match.id_usuario1;
-                    else if (match.id_usuario2 != null && match.id_usuario2.id != _usuarioActual.id)
-                        usuarioMostrar = match.id_usuario2;
-
-                    if (usuarioMostrar != null)
-                    {
-                        Console.WriteLine($"📛 Nombre: {usuarioMostrar.nombre}");
-                        Console.WriteLine($"👤 Login: {usuarioMostrar.login}");
-                        Console.WriteLine($"🎂 Edad: {usuarioMostrar.edad}");
-                        Console.WriteLine($"📝 Frase de perfil: {usuarioMostrar.FrasePerfil}");
-                        Console.WriteLine($"🎓 Carrera: {usuarioMostrar.idCarrera?.Nombre}");
-                        Console.WriteLine($"⚧️ Género: {usuarioMostrar.idGenero?.Nombre}");
-                        Console.WriteLine("-----------------------------------------------------");
-                    }
-                    else
-                    {
-                        Console.WriteLine("⚠️ Información de usuario no disponible para este match.");
-                        Console.WriteLine("-----------------------------------------------------");
-                    }
-                }
-            }
-
-            Console.WriteLine("\nPresione una tecla para volver al menú...");
-            Console.ReadKey();
-        }
-
-
+        //         Console.WriteLine("\nPresione una tecla para volver al menú...");
+        //         Console.ReadKey();
+        //     }
+        //     catch (Exception ex)
+        //     {
+        //         Console.WriteLine($"\n❌ Error al mostrar matches: {ex.Message}");
+        //         Console.WriteLine("\nPresione una tecla para volver al menú...");
+        //         Console.ReadKey();
+        //     }
+        // }
     }
 }
+
