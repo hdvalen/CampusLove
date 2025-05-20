@@ -94,3 +94,4 @@ INSERT INTO coincidencias (id_usuario1, id_usuario2) VALUES
 (5, 6),
 (9, 10),
 (13, 14);
+

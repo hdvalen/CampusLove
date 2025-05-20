@@ -76,5 +76,14 @@ CREATE TABLE IF NOT EXISTS administradores (
     activo BOOLEAN NOT NULL DEFAULT TRUE
 );
 
+CREATE TABLE IF NOT EXISTS likes (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    id_usuario1 INT NOT NULL,
+    id_usuario2 INT NOT NULL,
+    fecha_creacion DATETIME DEFAULT CURRENT_TIMESTAMP,
+    CONSTRAINT likes_usuario1_fk FOREIGN KEY (id_usuario1) REFERENCES usuarios(id),
+    CONSTRAINT likes_usuario2_fk FOREIGN KEY (id_usuario2) REFERENCES usuarios(id)
+);
+
 INSERT INTO administradores (nombre, usuario, contrasena, correo, nivel_acceso, fecha_creacion, activo)
 VALUES ('Administrador', 'admin', 'admin123', 'admin@campuslove.com', 3, NOW(), TRUE);
