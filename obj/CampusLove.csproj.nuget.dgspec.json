@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\ususario\\Documents\\Valentina\\campusland\\C_chart\\CampusLove\\CampusLove.csproj": {}
+    "C:\\Users\\ususario\\Documents\\Valentina\\campusland\\CampusLove\\CampusLove.csproj": {}
   },
   "projects": {
-    "C:\\Users\\ususario\\Documents\\Valentina\\campusland\\C_chart\\CampusLove\\CampusLove.csproj": {
+    "C:\\Users\\ususario\\Documents\\Valentina\\campusland\\CampusLove\\CampusLove.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\ususario\\Documents\\Valentina\\campusland\\C_chart\\CampusLove\\CampusLove.csproj",
+        "projectUniqueName": "C:\\Users\\ususario\\Documents\\Valentina\\campusland\\CampusLove\\CampusLove.csproj",
         "projectName": "CampusLove",
-        "projectPath": "C:\\Users\\ususario\\Documents\\Valentina\\campusland\\C_chart\\CampusLove\\CampusLove.csproj",
+        "projectPath": "C:\\Users\\ususario\\Documents\\Valentina\\campusland\\CampusLove\\CampusLove.csproj",
         "packagesPath": "C:\\Users\\ususario\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\ususario\\Documents\\Valentina\\campusland\\C_chart\\CampusLove\\obj\\",
+        "outputPath": "C:\\Users\\ususario\\Documents\\Valentina\\campusland\\CampusLove\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\ususario\\AppData\\Roaming\\NuGet\\NuGet.Config"

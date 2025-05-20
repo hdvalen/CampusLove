@@ -1,6 +1,7 @@
 
 
 using CampusLove.Application.services;
+using CampusLove.Infrastructure.Repositories;
 
 
 
@@ -10,12 +11,15 @@ namespace CampusLove.Application.UI
     {
         private readonly MenuRegistro _menuRegistro;
         private readonly MenuUsurio _menuUsuario;
+        private readonly MenuAdministrador _menuAdministrador;
 
         public MenuPrincipal()
         {
             var connection = dbSettings.GetConnection();
+            var adminRepo = new AdministradorRepository(connection);
             _menuRegistro = new MenuRegistro(connection);
             _menuUsuario = new MenuUsurio(connection);
+            _menuAdministrador = new MenuAdministrador(adminRepo);
         }
         public async Task MostrarMenu()
         {
@@ -33,6 +37,7 @@ namespace CampusLove.Application.UI
                 Console.WriteLine("║ 🔑 ACCESO AL SISTEMA                                  ║");
                 Console.WriteLine("║   1. 🔐 Iniciar sesión                                ║");
                 Console.WriteLine("║   2. 📝 Registrarse                                   ║");
+                Console.WriteLine("║   3. 🧑‍💼 Administrador                               ║");
                 Console.WriteLine("║   0. 🚪 Salir                                          ║");
                 Console.WriteLine("╚════════════════════════════════════════════════════════╝");
                 Console.ForegroundColor = ConsoleColor.White;
@@ -52,6 +57,11 @@ namespace CampusLove.Application.UI
                         MostrarMensaje("Abriendo formulario de registro, presiona una tecla...", ConsoleColor.Green);
                         Console.Clear();
                         _menuRegistro.RegistrarUsuario();
+                        break;
+                    case "3":
+                        MostrarMensaje("Abriendo menú de administrador, presiona una tecla...", ConsoleColor.Green);
+                        Console.Clear();
+                        await _menuAdministrador.MostrarMenuAdministradores();
                         break;
                     case "0":
                         salir = true;

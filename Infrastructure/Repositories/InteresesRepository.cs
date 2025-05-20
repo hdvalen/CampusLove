@@ -1,20 +1,25 @@
-using campusLove.Domain.Entities;
+
 using CampusLove.Domain.Ports;
 using CampusLove.Repositories;
+using CampusLoveampusLove.Domain.Entities;
 using MySql.Data.MySqlClient;
-using System.Collections.Generic;
 using System.Data;
-using System.Threading.Tasks;
 
 namespace CampusLove.Infrastructure.Repositories
 {
     public class InteresesRepository : IGenericRepository<Intereses>, IInteresesRepository
     {
-        private readonly MySqlConnection _connection;
+        private readonly string _connectionString;
 
         public InteresesRepository(MySqlConnection connection)
         {
-            _connection = connection;
+            _connectionString = connection.ConnectionString;
+        }
+
+        // Constructor alternativo que recibe directamente el connection string
+        public InteresesRepository(string connectionString)
+        {
+            _connectionString = connectionString;
         }
 
         public async Task<IEnumerable<Intereses>> GetAllAsync()
@@ -22,8 +27,9 @@ namespace CampusLove.Infrastructure.Repositories
             var intereses = new List<Intereses>();
             string query = "SELECT id, nombre FROM intereses";
 
-            await _connection.OpenAsync();
-            using var cmd = new MySqlCommand(query, _connection);
+            using var connection = new MySqlConnection(_connectionString);
+            await connection.OpenAsync();
+            using var cmd = new MySqlCommand(query, connection);
             using var reader = await cmd.ExecuteReaderAsync();
 
             while (await reader.ReadAsync())
@@ -35,7 +41,6 @@ namespace CampusLove.Infrastructure.Repositories
                 });
             }
 
-            await _connection.CloseAsync();
             return intereses;
         }
 
@@ -44,8 +49,9 @@ namespace CampusLove.Infrastructure.Repositories
             Intereses? interes = null;
             string query = "SELECT id, nombre FROM intereses WHERE id = @id";
 
-            await _connection.OpenAsync();
-            using var cmd = new MySqlCommand(query, _connection);
+            using var connection = new MySqlConnection(_connectionString);
+            await connection.OpenAsync();
+            using var cmd = new MySqlCommand(query, connection);
             cmd.Parameters.AddWithValue("@id", id);
             using var reader = await cmd.ExecuteReaderAsync();
 
@@ -58,7 +64,6 @@ namespace CampusLove.Infrastructure.Repositories
                 };
             }
 
-            await _connection.CloseAsync();
             return interes;
         }
 
@@ -66,13 +71,12 @@ namespace CampusLove.Infrastructure.Repositories
         {
             string query = "INSERT INTO intereses (nombre) VALUES (@nombre)";
 
-            await _connection.OpenAsync();
-            using var cmd = new MySqlCommand(query, _connection);
+            using var connection = new MySqlConnection(_connectionString);
+            await connection.OpenAsync();
+            using var cmd = new MySqlCommand(query, connection);
             cmd.Parameters.AddWithValue("@nombre", entity.nombre);
 
             int rowsAffected = await cmd.ExecuteNonQueryAsync();
-            await _connection.CloseAsync();
-
             return rowsAffected > 0;
         }
 
@@ -80,14 +84,13 @@ namespace CampusLove.Infrastructure.Repositories
         {
             string query = "UPDATE intereses SET nombre = @nombre WHERE id = @id";
 
-            await _connection.OpenAsync();
-            using var cmd = new MySqlCommand(query, _connection);
+            using var connection = new MySqlConnection(_connectionString);
+            await connection.OpenAsync();
+            using var cmd = new MySqlCommand(query, connection);
             cmd.Parameters.AddWithValue("@nombre", entity.nombre);
             cmd.Parameters.AddWithValue("@id", entity.id);
 
             int rowsAffected = await cmd.ExecuteNonQueryAsync();
-            await _connection.CloseAsync();
-
             return rowsAffected > 0;
         }
 
@@ -95,14 +98,54 @@ namespace CampusLove.Infrastructure.Repositories
         {
             string query = "DELETE FROM intereses WHERE id = @id";
 
-            await _connection.OpenAsync();
-            using var cmd = new MySqlCommand(query, _connection);
+            using var connection = new MySqlConnection(_connectionString);
+            await connection.OpenAsync();
+            using var cmd = new MySqlCommand(query, connection);
             cmd.Parameters.AddWithValue("@id", id);
 
             int rowsAffected = await cmd.ExecuteNonQueryAsync();
-            await _connection.CloseAsync();
-
             return rowsAffected > 0;
+        }
+
+        public async Task<Intereses?> GetByNombreAsync(string nombre)
+        {
+            Intereses? interes = null;
+            string query = "SELECT id, nombre FROM intereses WHERE nombre = @nombre";
+
+            using var connection = new MySqlConnection(_connectionString);
+            await connection.OpenAsync();
+            using var cmd = new MySqlCommand(query, connection);
+            cmd.Parameters.AddWithValue("@nombre", nombre);
+            using var reader = await cmd.ExecuteReaderAsync();
+
+            if (await reader.ReadAsync())
+            {
+                interes = new Intereses
+                {
+                    id = Convert.ToInt32(reader["id"]),
+                    nombre = reader["nombre"].ToString() ?? string.Empty
+                };
+            }
+
+            return interes;
+        }
+
+        public async Task<int> InsertAndReturnIdAsync(Intereses entity)
+        {
+            string query = "INSERT INTO intereses (nombre) VALUES (@nombre); SELECT LAST_INSERT_ID();";
+
+            using var connection = new MySqlConnection(_connectionString);
+            await connection.OpenAsync();
+            using var cmd = new MySqlCommand(query, connection);
+            cmd.Parameters.AddWithValue("@nombre", entity.nombre);
+
+            var result = await cmd.ExecuteScalarAsync();
+            return Convert.ToInt32(result);
+        }
+
+        Task IInteresesRepository.GetByNombreAsync(string interesInput)
+        {
+            return GetByNombreAsync(interesInput);
         }
     }
 }

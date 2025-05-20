@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "fGAkZuvqU1I=",
+  "dgSpecHash": "JDtkRfP5qAg=",
   "success": true,
-  "projectFilePath": "C:\\Users\\ususario\\Documents\\Valentina\\campusland\\C_chart\\CampusLove\\CampusLove.csproj",
+  "projectFilePath": "C:\\Users\\ususario\\Documents\\Valentina\\campusland\\CampusLove\\CampusLove.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\ususario\\.nuget\\packages\\bouncycastle.cryptography\\2.5.1\\bouncycastle.cryptography.2.5.1.nupkg.sha512",
     "C:\\Users\\ususario\\.nuget\\packages\\google.protobuf\\3.30.0\\google.protobuf.3.30.0.nupkg.sha512",
