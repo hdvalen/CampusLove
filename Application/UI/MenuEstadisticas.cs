@@ -59,13 +59,13 @@ namespace campusLove.Application.UI
                 Console.ResetColor();
 
                 Console.ForegroundColor = ConsoleColor.White;
-                Console.WriteLine("╠════════════════════════════════════════════════════════╣");
+                Console.WriteLine("╠════════════════════════════════════════════════════════════════════════════╣");
                 Console.WriteLine($"║ 👤 Nombre: {PadRight($"{usuario["nombre"]} {usuario["apellido"]}", 42)} ║");
-                Console.WriteLine($"║ 🆔 Usuario: {PadRight(usuario["nombre_usuario"].ToString(), 41)} ║");
-                Console.WriteLine($"║ 🎓 Carrera: {PadRight(usuario["carrera"].ToString(), 41)} ║");
-                Console.WriteLine($"║ 🚻 Género: {PadRight(usuario["genero"].ToString(), 42)} ║");
-                Console.WriteLine("╠════════════════════════════════════════════════════════╣");
-                Console.WriteLine("║ 🎯 INTERESES:                                          ║");
+                Console.WriteLine($"║ 🆔 Usuario: {PadRight(usuario["nombre_usuario"].ToString(), 41)}        ║");
+                Console.WriteLine($"║ 🎓 Carrera: {PadRight(usuario["carrera"].ToString(), 41)}               ║");
+                Console.WriteLine($"║ 🚻 Género: {PadRight(usuario["genero"].ToString(), 42)}                 ║");
+                Console.WriteLine("╠════════════════════════════════════════════════════════════════════════════╣");
+                Console.WriteLine("║ 🎯 INTERESES:                                                            ║");
                 
                 string intereses = usuario["intereses"].ToString();
                 if (intereses.Length > 45)
@@ -90,8 +90,8 @@ namespace campusLove.Application.UI
                 // Mostrar opciones
                 Console.ForegroundColor = ConsoleColor.Green;
                 Console.WriteLine("╔════════════════════════════════════════════════════════╗");
-                Console.WriteLine("║ OPCIONES:                                             ║");
-                Console.WriteLine("║   L - ❤️  Me gusta                                     ║");
+                Console.WriteLine("║ OPCIONES:                                              ║");
+                Console.WriteLine("║   L - ❤️  Me gusta                                    ║");
                 Console.WriteLine("║   D - 👎 No me interesa                               ║");
                 Console.WriteLine("║   N - ➡️  Siguiente perfil                            ║");
                 Console.WriteLine("║   P - ⬅️  Perfil anterior                             ║");
