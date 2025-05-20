@@ -32,7 +32,8 @@ public class MySqlDbFactory : IDbFactory
     public ICoincidenciaRepository CrearCoincidenciaRepository()
     {
         var connection = ConexionSingleton.Instancia(_connectionString).ObtenerConexion();
-        return new CoincidenciaRepository(connection);
+        var usuarioRepository = CrearUsuarioRepository();
+        return new CoincidenciaRepository(connection, usuarioRepository);
     }
 }
 
