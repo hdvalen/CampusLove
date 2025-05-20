@@ -8,12 +8,12 @@ CREATE TABLE IF NOT EXISTS generos (
 
 CREATE TABLE  IF NOT EXISTS carreras (
     id INT PRIMARY KEY AUTO_INCREMENT,
-    nombre VARCHAR(100) NOT NULL
+    nombre VARCHAR(50) NOT NULL
 );
 
 CREATE TABLE   IF NOT EXISTS intereses (
     id INT PRIMARY KEY AUTO_INCREMENT,
-    nombre VARCHAR(100) NOT NULL
+    nombre VARCHAR(50) NOT NULL
 );
 
 CREATE TABLE  IF NOT EXISTS usuarios (
@@ -57,3 +57,17 @@ CREATE TABLE  IF NOT EXISTS coincidencias (
     CONSTRAINT id_usuario2_fk FOREIGN KEY (id_usuario2) REFERENCES usuarios(id)
 );
 
+CREATE TABLE IF NOT EXISTS administradores (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    nombre VARCHAR(70) NOT NULL,
+    usuario VARCHAR(50) NOT NULL UNIQUE,
+    contrasena VARCHAR(70) NOT NULL,
+    correo VARCHAR(70) NOT NULL,
+    nivel_acceso INT NOT NULL DEFAULT 1,
+    fecha_creacion DATETIME NOT NULL,
+    ultimo_acceso DATETIME NULL,
+    activo BOOLEAN NOT NULL DEFAULT TRUE
+);
+
+INSERT INTO administradores (nombre, usuario, contrasena, correo, nivel_acceso, fecha_creacion, activo)
+VALUES ('Administrador', 'admin', 'admin123', 'admin@campuslove.com', 3, NOW(), TRUE);
